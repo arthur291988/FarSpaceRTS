@@ -1,0 +1,41 @@
+fileFormatVersion: 2
+guid: b6cd79ca378a62548810183f7cd5ac91
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - pointerDetection: {instanceID: 0}
+  - CruiserBullet4: {fileID: 8639265024773102488, guid: d629c25622faff940b97bd0cda6e1754,
+      type: 3}
+  - CruiserBullet3: {fileID: 8639265024773102488, guid: a46f73a334c7ddd418c90432aedb42c2,
+      type: 3}
+  - CruiserBullet2: {fileID: 8639265024773102488, guid: f1ed9ffe48afa0643b848ca74f973d76,
+      type: 3}
+  - CruiserBullet1: {fileID: 8639265024773102488, guid: 46ba9a89f8e538348bf7cd4a1a09c226,
+      type: 3}
+  - DestrBullet4: {fileID: 8639265024773102488, guid: 1ccc287a1f1922048ac398a3bb7ad950,
+      type: 3}
+  - DestrBullet3: {fileID: 8639265024773102488, guid: 6101294db7c97e444b38755a3ca7738a,
+      type: 3}
+  - DestrBullet2: {fileID: 8639265024773102488, guid: 45da4b44adee65545a40a3b43f38f1e9,
+      type: 3}
+  - DestrBullet1: {fileID: 8639265024773102488, guid: 5b41337f49e9659408ddd593a8c53733,
+      type: 3}
+  - DstrExploision: {fileID: 1026075132912642162, guid: 544e69e0791b8ef46b64151066046ab8,
+      type: 3}
+  - CruiserExploision: {fileID: 5087019862763615165, guid: d16898be55bab57418e02949995ac256,
+      type: 3}
+  - ParalShipCruis: {fileID: 5093466767957319608, guid: 2a501cf3c751ee64b8b1a4c74256e66c,
+      type: 3}
+  - ParalShipDstr: {fileID: 5093466767957319608, guid: 2aced9894ae280345893189ef317907c,
+      type: 3}
+  - paralBullet1: {fileID: 8105220299408142754, guid: e467c605ede17754fa811f7c772730d1,
+      type: 3}
+  - paralBullet2: {fileID: 8105220299408142754, guid: 696f3856b533aaa4cb5467bea333bfb7,
+      type: 3}
+  - powerShield: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - BullCruis1
+  - BullDstr1
+  - BullParal1
+  - BullCruis2
+  - BullDstr2
+  - BullParal2
+  - BullCruis3
+  - BullDstr3
+  - BullCruis4
+  - BullDstr4
+  - BullCruisPlay1
+  - BullDstrPlay1
+  - BullParalPlay1
+  - BullCruisPlay2
+  - BullDstrPlay2
+  - BullParalPlay2
+  - BullCruisPlay3
+  - BullDstrPlay3
+  - BullCruisPlay4
+  - BullDstrPlay4
+  - PowerShield
+  - GunBullPlay
+  - GunBullCPU
+  - PowerShieldCPU
+  - MegaShot
+  - Gun
+  - GuardCruiser
+  - GCruisOut
+  - Enemy
+  - Energon
+  - energonBull
+  - Asteroid
+  - playerBullJourney
+  - Booster
+  - EnergyBall
+  - BallFromEnergon
+  - BattleShip
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Enemy
+  - Player
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2090035945
+    locked: 0
