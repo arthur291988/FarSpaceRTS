@@ -14,7 +14,7 @@ public class UISelectingBox : Singleton<UISelectingBox>
     public bool ifAnyShipChousen;
     [HideInInspector]
     public List<PlayerBattleShip> chosenPlayerBattleShipsObject;
-    private List<PlayerBattleShip> chosenCruisers;
+    //private List<PlayerBattleShip> chosenCruisers;
     private List<Vector3> squardPositions;
     private float radiusGroup;
     private int innnerCircleMax;
@@ -40,7 +40,7 @@ public class UISelectingBox : Singleton<UISelectingBox>
         megaAttackController = FindObjectOfType<MegaAttackController>();
         selectablePlayerBattleShipsObject = new List<PlayerBattleShip>();
         chosenPlayerBattleShipsObject = new List<PlayerBattleShip>();
-        chosenCruisers = new List<PlayerBattleShip>();
+        //chosenCruisers = new List<PlayerBattleShip>();
         squardPositions = new List<Vector3>();
         innnerCircleMax = 8; //excep the ship in center
         radiusGroup = 3;
@@ -83,15 +83,16 @@ public class UISelectingBox : Singleton<UISelectingBox>
 
 
                 startPos = _touch.position;
-                if (checkIfTouchNotInsideUIPanel(_touch.position))
-                {
-                    chosenCruisers.Clear();
-                    megaAttackController.megaAttackButton.interactable = false;
-                }
-                else
-                {
-                    toolsPanelIsTouched = true;
-                }
+                if (checkIfTouchNotInsideUIPanel(_touch.position)) toolsPanelIsTouched = true;
+                //WHEN MEGA ATTCK IS CONTROLLED BY PLAYER
+                //{
+                //    //chosenCruisers.Clear();
+                //    megaAttackController.megaAttackButton.interactable = false;
+                //}
+                //else
+                //{
+                //    toolsPanelIsTouched = true;
+                //}
                 activateOrDisactivateReleaseSelectionToken(false);
             }
 
@@ -253,19 +254,20 @@ public class UISelectingBox : Singleton<UISelectingBox>
         selectingBox.anchoredPosition = startPos + new Vector2(width / 2, height / 2);
     }
 
-    private void assignTheCruiserToMegaAttack() {
-        if (chosenCruisers.Count > 0)
-        {
-            if (chosenCruisers.Count < 2) megaAttackController.chosenCruiserToMegaAttack = chosenCruisers[0];
-            else megaAttackController.chosenCruiserToMegaAttack = chosenCruisers[Random.Range(0, chosenCruisers.Count)];
-            megaAttackController.megaAttackButton.interactable = true;
-        }
-        else
-        {
-            megaAttackController.megaAttackButton.interactable = false;
-        }
-        chosenCruisers.Clear();
-    }
+    //WHEN MEGA ATTCK IS CONTROLLED BY PLAYER
+    //private void assignTheCruiserToMegaAttack() {
+    //    if (chosenCruisers.Count > 0)
+    //    {
+    //        if (chosenCruisers.Count < 2) megaAttackController.chosenCruiserToMegaAttack = chosenCruisers[0];
+    //        else megaAttackController.chosenCruiserToMegaAttack = chosenCruisers[Random.Range(0, chosenCruisers.Count)];
+    //        megaAttackController.megaAttackButton.interactable = true;
+    //    }
+    //    else
+    //    {
+    //        megaAttackController.megaAttackButton.interactable = false;
+    //    }
+    //    chosenCruisers.Clear();
+    //}
 
     private void ReleaseSelectionBox()
     {
@@ -281,11 +283,11 @@ public class UISelectingBox : Singleton<UISelectingBox>
             if (screenPos.x > min.x && screenPos.x < max.x && screenPos.y > min.y && screenPos.y < max.y)
             {
                 selectablePlayerBattleShipsObject[i].SelectedAndReady();
-                if (selectablePlayerBattleShipsObject[i].isCruiser) chosenCruisers.Add(selectablePlayerBattleShipsObject[i]);
+                //if (selectablePlayerBattleShipsObject[i].isCruiser) chosenCruisers.Add(selectablePlayerBattleShipsObject[i]); //WHEN MEGA ATTCK IS CONTROLLED BY PLAYER
                 if (deselectToken.color.a<1) activateOrDisactivateReleaseSelectionToken(true);
             }
         }
-        if (megaAttackController.megaAttackTimer<=0) assignTheCruiserToMegaAttack();
+        //if (megaAttackController.megaAttackTimer<=0) assignTheCruiserToMegaAttack();//WHEN MEGA ATTCK IS CONTROLLED BY PLAYER
         selectingBox.sizeDelta = Vector2.zero;
         toolsPanelIsTouched = false;
     }

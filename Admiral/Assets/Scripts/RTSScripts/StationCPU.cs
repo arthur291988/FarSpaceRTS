@@ -33,7 +33,7 @@ public class StationCPU : StationClass
     private float radiusGroup;
     private int innnerCircleMax;
 
-    public const int BASE_STATION_DEFENCE_SHIPS_COUNT = 6;
+    public const int BASE_STATION_DEFENCE_SHIPS_COUNT = 2; //6;
     private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 10;
 
 
@@ -1173,14 +1173,15 @@ public class StationCPU : StationClass
         {
             StarController closetsStar = null;
             for (int i = 0; i < CommonProperties.stars.Count; i++) {
-                if (i == 0) closetsStar = CommonProperties.stars[i];
-                else { 
-                    if((closetsStar.starPosition-stationPosition).sqrMagnitude> (CommonProperties.stars[i].starPosition - stationPosition).sqrMagnitude) closetsStar = CommonProperties.stars[i];
-                }
+                if ((closetsStar.starPosition - stationPosition).magnitude<=oneStepCloseStationsMaxDistance) closetsStar = CommonProperties.stars[i];
+                //if (i == 0) closetsStar = CommonProperties.stars[i];
+                //else { 
+                //    if((closetsStar.starPosition-stationPosition).sqrMagnitude> (CommonProperties.stars[i].starPosition - stationPosition).sqrMagnitude) closetsStar = CommonProperties.stars[i];
+                //}
             }
             return closetsStar;
         }
-        else if (CommonProperties.stars.Count == 1) return CommonProperties.stars[0];
+        else if (CommonProperties.stars.Count == 1 && (CommonProperties.stars[0].starPosition - stationPosition).magnitude <= oneStepCloseStationsMaxDistance) return CommonProperties.stars[0];
         else return null;
     }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayerBattleShip : BattleShipClass
@@ -234,6 +235,23 @@ public class PlayerBattleShip : BattleShipClass
     #endregion selecting and moving functionality
 
     #region attack and defence function
+
+    //used to determine to wich ship assign the mega attack
+    public int countOfEnemyShipsNear()
+    {
+        int count = 0;
+        for (int i = 0; i < CommonProperties.CPUBattleShips.Count; i++)
+        {
+            if ((CommonProperties.CPUBattleShips[i].shipTransform.position - shipTransform.position).magnitude <= attackDistance)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+
     private void collectTheCloseEnemyShips() {
         for (int i = 0; i < CommonProperties.CPUBattleShips.Count; i++)
         {
@@ -264,6 +282,15 @@ public class PlayerBattleShip : BattleShipClass
         if (closeBattleShips.Count > 0 || closeStations.Count > 0 || closeStars.Count>0)
         {
             attackMode = true;
+            if (isCruiser)
+            {
+                if (countOfEnemyShipsNear() > 1)
+                {
+                    if (!CommonProperties.PlayerMegaAttackBattleShips.Contains(this)) CommonProperties.PlayerMegaAttackBattleShips.Add(this);
+                    if (!CommonProperties.MegaAttackCoroutineIsOn[CPUNumber] && CommonProperties.MegaAttackTimer[CPUNumber] <= 0) StartCoroutine(CommonProperties.MegaAttack(CPUNumber));
+                }
+                else CommonProperties.PlayerMegaAttackBattleShips.Remove(this);
+            }
         }
         else
         {
@@ -292,6 +319,18 @@ public class PlayerBattleShip : BattleShipClass
                 attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
                 attackLaserLine.enabled = true;
             }
+        }
+        //priority attack is for battle ships so there is double check if there any battle ship around appeared
+        else if (closeBattleShips.Count > 0)
+        {
+            shipToAttak = closeBattleShips.Count < 2 ? closeBattleShips[0] : closeBattleShips[Random.Range(0, closeBattleShips.Count)];
+            if (shipToAttak.isActiveAndEnabled)
+            {
+                attackLaserLine.SetPosition(0, shipTransform.position);
+                attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+                attackLaserLine.enabled = true;
+            }
+            else shipToAttak = null;
         }
         else if (stationToAttak != null)
         {
@@ -510,11 +549,12 @@ public class PlayerBattleShip : BattleShipClass
         UISelectingBox.Instance.selectablePlayerBattleShipsObject.Remove(this);
         UISelectingBox.Instance.chosenPlayerBattleShipsObject.Remove(this);
         if (UISelectingBox.Instance.chosenPlayerBattleShipsObject.Count==0) UISelectingBox.Instance.ifAnyShipChousen = false;
-        if (megaAttackController.chosenCruiserToMegaAttack == this) megaAttackController.disableMegaAttackButtonIfCruiserIsDestroyed();
+        //if (megaAttackController.chosenCruiserToMegaAttack == this) megaAttackController.disableMegaAttackButtonIfCruiserIsDestroyed();
         if (maternalStation!=null && maternalStation.isActiveAndEnabled) maternalStation.ShipsAssigned--;
         maternalStation = null;
         if (megaAttackOfCruis3 != null) megaAttackOfCruis3.SetActive(false);
         if (megaAttackOfCruis2 != null) megaAttackOfCruis2.SetActive(false);
+        if (isCruiser) CommonProperties.PlayerMegaAttackBattleShips.Remove(this);
         isUnderMegaDefence = false;
         attackLaserLine.enabled = false;
         if (isParalyzer) paralizerLaserLine.enabled = false;

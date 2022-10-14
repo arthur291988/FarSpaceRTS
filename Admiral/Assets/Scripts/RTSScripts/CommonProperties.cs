@@ -30,9 +30,10 @@ public class CommonProperties : MonoBehaviour
     public static Dictionary<int, List<CPUBattleShip>> CPUBattleShipsDictionary;
     public static Dictionary<int, List<StationClass>> CPUStationsDictionary;
 
-    public static List<CPUBattleShip> CPUMegaAttackBattleShips;
-    public static bool CPUMegaAttackCoroutineIsOn;
-    public static float CPUMegaAttackTimer;
+    public static List<PlayerBattleShip> PlayerMegaAttackBattleShips;
+    public static Dictionary<int, List<CPUBattleShip>> CPUMegaAttackBattleShipsDictionary;
+    public static List<bool> MegaAttackCoroutineIsOn;
+    public static List<float> MegaAttackTimer;
 
     //public static EnergonMoving energonOnScene;
     public static List<EnergonMoving> energonsOnScene;
@@ -122,10 +123,10 @@ public class CommonProperties : MonoBehaviour
     public static float attackDistanceForStations = 16;
     public static float attackDistanceForGuns = 18;
 
-    public static float moveSpeedFor0 = 0.07f;
-    public static float moveSpeedFor1 = 0.09f;
-    public static float moveSpeedFor2 = 0.11f;
-    public static float moveSpeedFor3 = 0.13f;
+    public static float moveSpeedFor0 = 0.13f;//0.07f;
+    public static float moveSpeedFor1 = 0.15f;//0.09f;
+    public static float moveSpeedFor2 = 0.17f;//0.11f;
+    public static float moveSpeedFor3 = 0.2f;//0.13f;
 
     public static int Station0EnergyLimit = 2000;
     public static int Station1EnergyLimit = 3500;
@@ -294,7 +295,6 @@ public class CommonProperties : MonoBehaviour
             //radiusGroup = 30;
             UIButtonSound = GetComponent<AudioSource>();
         UpgradeSound = transform.GetChild(0).GetComponent<AudioSource>();
-        CPUMegaAttackCoroutineIsOn = false;
         allStations = new List<StationClass>();
 
         playerBattleShips = new List<PlayerBattleShip>();
@@ -319,7 +319,29 @@ public class CommonProperties : MonoBehaviour
         CPUBattleShipsDictionary = new Dictionary<int, List<CPUBattleShip>>();
         CPUStationsDictionary = new Dictionary<int, List<StationClass>>();
 
-        CPUMegaAttackBattleShips = new List<CPUBattleShip>();
+        PlayerMegaAttackBattleShips = new List<PlayerBattleShip>();
+        CPUMegaAttackBattleShipsDictionary = new Dictionary<int, List<CPUBattleShip>>
+        {
+            { 1, new List<CPUBattleShip>() },
+            { 2, new List<CPUBattleShip>() },
+            { 3, new List<CPUBattleShip>() },
+            { 4, new List<CPUBattleShip>() },
+        };
+
+        MegaAttackCoroutineIsOn = new List<bool> () {
+            false,
+            false,
+            false,
+            false,
+            false,
+        };
+        MegaAttackTimer = new List<float>() {
+            0,
+            0,
+            0,
+            0,
+            0,
+        };
 
         //populating the dictionary of CPU battle ships collections
         for (int i = 0; i < 4; i++) {
@@ -348,24 +370,43 @@ public class CommonProperties : MonoBehaviour
         Invoke("populateTheCoordinatesBaseOfHexBordersDots", 0.5f);
     }
 
-    public static IEnumerator CPUMegaAttack() {
-        CPUMegaAttackCoroutineIsOn = true;
+    //used both with CPU and player mega attack
+    public static IEnumerator MegaAttack(int CPUNumber) {
+        MegaAttackCoroutineIsOn[CPUNumber] = true;
         yield return new WaitForSeconds(Random.Range(1.5f, 2.5f));
+        MegaAttackCoroutineIsOn[CPUNumber] = false;
 
-        CPUMegaAttackCoroutineIsOn = false;
-
-        if (CPUMegaAttackBattleShips.Count == 1) CPUMegaAttackBattleShips[0].MegaAttackOfShip();
-        else if (CPUMegaAttackBattleShips.Count > 0)
+        if (CPUNumber == 0)
         {
-            CPUBattleShip chousenCruiser = null;
-            for (int i = 0; i < CPUMegaAttackBattleShips.Count; i++)
+            if (PlayerMegaAttackBattleShips.Count == 1) PlayerMegaAttackBattleShips[0].MegaAttackOfShip();
+            else if (PlayerMegaAttackBattleShips.Count > 0)
             {
-                if (i == 0) chousenCruiser = CPUMegaAttackBattleShips[i];
-                else if (chousenCruiser.countOfEnemyShipsNear() < CPUMegaAttackBattleShips[i].countOfEnemyShipsNear()) chousenCruiser = CPUMegaAttackBattleShips[i];
+                PlayerBattleShip chousenCruiser = null;
+                for (int i = 0; i < PlayerMegaAttackBattleShips.Count; i++)
+                {
+                    if (i == 0) chousenCruiser = PlayerMegaAttackBattleShips[i];
+                    else if (chousenCruiser.countOfEnemyShipsNear() < PlayerMegaAttackBattleShips[i].countOfEnemyShipsNear())
+                        chousenCruiser = PlayerMegaAttackBattleShips[i];
+                }
+                chousenCruiser.MegaAttackOfShip();
             }
-            chousenCruiser.MegaAttackOfShip();
         }
-        CPUMegaAttackTimer = megaAttackTime;
+        else
+        {
+            if (CPUMegaAttackBattleShipsDictionary[CPUNumber].Count == 1) CPUMegaAttackBattleShipsDictionary[CPUNumber][0].MegaAttackOfShip();
+            else if (CPUMegaAttackBattleShipsDictionary[CPUNumber].Count > 0)
+            {
+                CPUBattleShip chousenCruiser = null;
+                for (int i = 0; i < CPUMegaAttackBattleShipsDictionary[CPUNumber].Count; i++)
+                {
+                    if (i == 0) chousenCruiser = CPUMegaAttackBattleShipsDictionary[CPUNumber][i];
+                    else if (chousenCruiser.countOfEnemyShipsNear() < CPUMegaAttackBattleShipsDictionary[CPUNumber][i].countOfEnemyShipsNear()) 
+                        chousenCruiser = CPUMegaAttackBattleShipsDictionary[CPUNumber][i];
+                }
+                chousenCruiser.MegaAttackOfShip();
+            }
+        }
+        MegaAttackTimer[CPUNumber] = megaAttackTime;
     }
 
     //is used by CPU battle ships to avoid the other stations on way to attack
@@ -551,12 +592,45 @@ public class CommonProperties : MonoBehaviour
     //}
     private void Update()
     {
-        if (CPUMegaAttackTimer > 0)
+        //did not use for loop to not initiate it for all timer for vain in case if there all timers zero but only one o two
+        if (MegaAttackTimer[0] > 0)
         {
-            CPUMegaAttackTimer -= Time.deltaTime;
-            if (CPUMegaAttackTimer <= 0) {
-                CPUMegaAttackTimer = 0;
-                if (CPUMegaAttackBattleShips.Count > 0 && !CPUMegaAttackCoroutineIsOn) StartCoroutine(CPUMegaAttack());
+            MegaAttackTimer[0] -= Time.deltaTime;
+            if (MegaAttackTimer[0] < 0)
+            {
+                MegaAttackTimer[0] = 0;
+            }
+        }
+        if (MegaAttackTimer[1] > 0)
+        {
+            MegaAttackTimer[1] -= Time.deltaTime;
+            if (MegaAttackTimer[1] < 0)
+            {
+                MegaAttackTimer[1] = 0;
+            }
+        }
+        if (MegaAttackTimer[2] > 0)
+        {
+            MegaAttackTimer[2] -= Time.deltaTime;
+            if (MegaAttackTimer[2] < 0)
+            {
+                MegaAttackTimer[2] = 0;
+            }
+        }
+        if (MegaAttackTimer[3] > 0)
+        {
+            MegaAttackTimer[3] -= Time.deltaTime;
+            if (MegaAttackTimer[3] < 0)
+            {
+                MegaAttackTimer[3] = 0;
+            }
+        }
+        if (MegaAttackTimer[4] > 0)
+        {
+            MegaAttackTimer[4] -= Time.deltaTime;
+            if (MegaAttackTimer[4] < 0)
+            {
+                MegaAttackTimer[4] = 0;
             }
         }
     }

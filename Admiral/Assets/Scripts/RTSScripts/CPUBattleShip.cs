@@ -274,13 +274,19 @@ public class CPUBattleShip : BattleShipClass
         if (closeBattleShips.Count > 0 /*|| closePlayerGuns.Count>0*/ || closeStations.Count > 0 || closeStars.Count > 0)
         {
             attackMode = true;
-            if (isCruiser && countOfEnemyShipsNear() > 1 && !CommonProperties.CPUMegaAttackBattleShips.Contains(this)) CommonProperties.CPUMegaAttackBattleShips.Add(this);
-            if (!CommonProperties.CPUMegaAttackCoroutineIsOn && CommonProperties.CPUMegaAttackTimer <= 0) StartCoroutine(CommonProperties.CPUMegaAttack());
+            if (isCruiser) {
+                if (countOfEnemyShipsNear() > 1)
+                {
+                    if (!CommonProperties.CPUMegaAttackBattleShipsDictionary[CPUNumber].Contains(this)) CommonProperties.CPUMegaAttackBattleShipsDictionary[CPUNumber].Add(this);
+                    if (!CommonProperties.MegaAttackCoroutineIsOn[CPUNumber] && CommonProperties.MegaAttackTimer[CPUNumber] <= 0) StartCoroutine(CommonProperties.MegaAttack(CPUNumber));
+                }
+                else CommonProperties.CPUMegaAttackBattleShipsDictionary[CPUNumber].Remove(this);
+            }
+            
         }
         else
         {
             attackMode = false;
-            if (isCruiser) CommonProperties.CPUMegaAttackBattleShips.Remove(this);
             //gunToAttak = null;
             shipToAttak = null;
             stationToAttak = null;
@@ -319,6 +325,17 @@ public class CPUBattleShip : BattleShipClass
                 attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
                 attackLaserLine.enabled = true;
             }
+        }
+        //priority attack is for battle ships so there is double check if there any battle ship around appeared
+        else if (closeBattleShips.Count > 0) {
+            shipToAttak = closeBattleShips.Count < 2 ? closeBattleShips[0] : closeBattleShips[Random.Range(0, closeBattleShips.Count)];
+            if (shipToAttak.isActiveAndEnabled)
+            {
+                attackLaserLine.SetPosition(0, shipTransform.position);
+                attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+                attackLaserLine.enabled = true;
+            }
+            else shipToAttak = null;
         }
         else if (stationToAttak != null)
         {
@@ -598,7 +615,7 @@ public class CPUBattleShip : BattleShipClass
         if (megaAttackOfCruis3 != null) megaAttackOfCruis3.SetActive(false);
         if (megaAttackOfCruis2 != null) megaAttackOfCruis2.SetActive(false);
         isUnderMegaDefence = false;
-        if (isCruiser) CommonProperties.CPUMegaAttackBattleShips.Remove(this);
+        if (isCruiser) CommonProperties.CPUMegaAttackBattleShipsDictionary[CPUNumber].Remove(this);
         maternalStation = null;
         attackLaserLine.enabled = false;
         if (isParalyzer) paralizerLaserLine.enabled = false;

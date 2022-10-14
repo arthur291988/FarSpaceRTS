@@ -354,8 +354,6 @@ public class StationClass : MonoBehaviour
                 CommonProperties.connectionLines[CPUNumber][0].stations[1].groupWhereTheStationIs = newConnection;
                 CommonProperties.energyOfStationGroups.Add(newConnection, 0);
 
-                //no need to add other energyes cause they are zero at this point since were zero while connection
-                CommonProperties.energyOfStationGroups[newConnection] = energyOfDiedGroup;
                 //setting the limit of energy for station group
                 CommonProperties.energyLimitOfStationGroups.Add(newConnection, CommonProperties.getTheEnergyLimitOfStationsGroup(newConnection));
             }
@@ -494,6 +492,44 @@ public class StationClass : MonoBehaviour
                         }
                     }
                 }
+            }
+        }
+
+        //distributing the energy of destroyed group. If there is at least one group it will get the energy, if more the enery will be distributed.
+        //if there is no group the energy will go to station with higest upgrade 
+        if (CommonProperties.StationGroups[CPUNumber].Count > 0)
+        {
+            int enenrgy = energyOfDiedGroup / CommonProperties.StationGroups[CPUNumber].Count;
+            for (int i = 0; i < CommonProperties.StationGroups[CPUNumber].Count; i++)
+            {
+                CommonProperties.energyOfStationGroups[CommonProperties.StationGroups[CPUNumber][i]] += enenrgy;
+            }
+        }
+        else {
+            if (CPUNumber == 0 && CommonProperties.playerStations.Count > 0)
+            {
+                StationClass station = new StationClass();
+                for (int i = 0; i < CommonProperties.playerStations.Count; i++)
+                {
+                    if (i == 0) station = CommonProperties.playerStations[i];
+                    else
+                    {
+                        if (station.stationCurrentLevel < CommonProperties.playerStations[i].stationCurrentLevel) station = CommonProperties.playerStations[i];
+                    }
+                }
+                station.energyOfStation += energyOfDiedGroup;
+            }
+            else if (CommonProperties.CPUStationsDictionary[CPUNumber].Count>0) {
+                StationClass station = new StationClass();
+                for (int i = 0; i < CommonProperties.CPUStationsDictionary[CPUNumber].Count; i++)
+                {
+                    if (i == 0) station = CommonProperties.CPUStationsDictionary[CPUNumber][i];
+                    else
+                    {
+                        if (station.stationCurrentLevel < CommonProperties.CPUStationsDictionary[CPUNumber][i].stationCurrentLevel) station = CommonProperties.CPUStationsDictionary[CPUNumber][i];
+                    }
+                }
+                station.energyOfStation += energyOfDiedGroup;
             }
         }
     }
