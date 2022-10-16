@@ -188,7 +188,7 @@ public class GameController : MonoBehaviour
         station.Destr2Par = 0;
         station.Destr1 = 0;
         station.Destr1Par = 0;
-        station.energyOfStation = 20;
+        station.energyOfStation = 150;
         station.fillingSpeed = CommonProperties.star0FillingReducer; ;
         station.ShipsAssigned = 0;
         station.energyToConnection = CommonProperties.Station0EnergyToConnection;

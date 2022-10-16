@@ -255,7 +255,7 @@ public class PlayerBattleShip : BattleShipClass
     private void collectTheCloseEnemyShips() {
         for (int i = 0; i < CommonProperties.CPUBattleShips.Count; i++)
         {
-            if ((CommonProperties.CPUBattleShips[i].shipTransform.position - shipTransform.position).magnitude <= attackDistance&& !CommonProperties.CPUBattleShips[i].isUnderMegaDefence)
+            if (CommonProperties.CPUBattleShips[i].isActiveAndEnabled && (CommonProperties.CPUBattleShips[i].shipTransform.position - shipTransform.position).magnitude <= attackDistance&& !CommonProperties.CPUBattleShips[i].isUnderMegaDefence)
             {
                 closeBattleShips.Add(CommonProperties.CPUBattleShips[i]);
             }
@@ -265,14 +265,14 @@ public class PlayerBattleShip : BattleShipClass
         {
             for (int i = 0; i < CommonProperties.CPUStations.Count; i++)
             {
-                if ((CommonProperties.CPUStations[i].stationPosition - shipTransform.position).magnitude <= attackDistance)
+                if (CommonProperties.CPUStations[i].isActiveAndEnabled && (CommonProperties.CPUStations[i].stationPosition - shipTransform.position).magnitude <= attackDistance)
                 {
                     closeStations.Add(CommonProperties.CPUStations[i]);
                 }
             }
             for (int i = 0; i < CommonProperties.stars.Count; i++)
             {
-                if ((CommonProperties.stars[i].starPosition - shipTransform.position).magnitude <= attackDistance)
+                if (CommonProperties.stars[i].isActiveAndEnabled && (CommonProperties.stars[i].starPosition - shipTransform.position).magnitude <= attackDistance)
                 {
                     closeStars.Add(CommonProperties.stars[i]);
                 }
@@ -559,6 +559,7 @@ public class PlayerBattleShip : BattleShipClass
         attackLaserLine.enabled = false;
         if (isParalyzer) paralizerLaserLine.enabled = false;
         powerShiled.SetActive(false);
+        StopCoroutine(attackTheEnemy());
         closeBattleShips.Clear();
         //closeCPUGuns.Clear();
         closeBattleShips.Clear();

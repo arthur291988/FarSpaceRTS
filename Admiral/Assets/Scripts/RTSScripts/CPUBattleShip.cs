@@ -205,13 +205,11 @@ public class CPUBattleShip : BattleShipClass
         return count;
     }
 
-
-
     private void collectTheCloseEnemyShips()
     {
         for (int i = 0; i < CommonProperties.playerBattleShips.Count; i++)
         {
-            if ((CommonProperties.playerBattleShips[i].shipTransform.position - shipTransform.position).magnitude <= attackDistance && !CommonProperties.playerBattleShips[i].isUnderMegaDefence)
+            if (CommonProperties.playerBattleShips[i].isActiveAndEnabled&&(CommonProperties.playerBattleShips[i].shipTransform.position - shipTransform.position).magnitude <= attackDistance && !CommonProperties.playerBattleShips[i].isUnderMegaDefence)
             {
                 closeBattleShips.Add(CommonProperties.playerBattleShips[i]);
             }
@@ -222,7 +220,7 @@ public class CPUBattleShip : BattleShipClass
             {
                 for (int y = 0; y < CommonProperties.CPUBattleShipsDictionary[i].Count; y++)
                 {
-                    if ((CommonProperties.CPUBattleShipsDictionary[i][y].shipTransform.position - shipTransform.position).magnitude <= attackDistance && !CommonProperties.CPUBattleShipsDictionary[i][y].isUnderMegaDefence)
+                    if (CommonProperties.CPUBattleShipsDictionary[i][y].isActiveAndEnabled && (CommonProperties.CPUBattleShipsDictionary[i][y].shipTransform.position - shipTransform.position).magnitude <= attackDistance && !CommonProperties.CPUBattleShipsDictionary[i][y].isUnderMegaDefence)
                     {
                         closeBattleShips.Add(CommonProperties.CPUBattleShipsDictionary[i][y]);
                     }
@@ -242,7 +240,7 @@ public class CPUBattleShip : BattleShipClass
         {
             for (int i = 0; i < CommonProperties.playerStations.Count; i++)
             {
-                if ((CommonProperties.playerStations[i].stationPosition - shipTransform.position).magnitude <= attackDistance)
+                if (CommonProperties.playerStations[i].isActiveAndEnabled && (CommonProperties.playerStations[i].stationPosition - shipTransform.position).magnitude <= attackDistance)
                 {
                     closeStations.Add(CommonProperties.playerStations[i]);
                 }
@@ -253,7 +251,7 @@ public class CPUBattleShip : BattleShipClass
                 {
                     for (int y = 0; y < CommonProperties.CPUStationsDictionary[i].Count; y++)
                     {
-                        if ((CommonProperties.CPUStationsDictionary[i][y].stationPosition - shipTransform.position).magnitude <= attackDistance)
+                        if (CommonProperties.CPUStationsDictionary[i][y].isActiveAndEnabled && (CommonProperties.CPUStationsDictionary[i][y].stationPosition - shipTransform.position).magnitude <= attackDistance)
                         {
                             closeStations.Add(CommonProperties.CPUStationsDictionary[i][y]);
                         }
@@ -263,7 +261,7 @@ public class CPUBattleShip : BattleShipClass
 
             for (int i = 0; i < CommonProperties.stars.Count; i++)
             {
-                if ((CommonProperties.stars[i].starPosition - shipTransform.position).magnitude <= attackDistance)
+                if (CommonProperties.stars[i].isActiveAndEnabled && (CommonProperties.stars[i].starPosition - shipTransform.position).magnitude <= attackDistance)
                 {
                     closeStars.Add(CommonProperties.stars[i]);
                 }
@@ -568,8 +566,6 @@ public class CPUBattleShip : BattleShipClass
         }
     }
 
-
-
     IEnumerator defenceShieldTurn()
     {
         shieldIsOn = true;
@@ -618,6 +614,7 @@ public class CPUBattleShip : BattleShipClass
         if (isCruiser) CommonProperties.CPUMegaAttackBattleShipsDictionary[CPUNumber].Remove(this);
         maternalStation = null;
         attackLaserLine.enabled = false;
+        StopCoroutine(attackTheEnemy());
         if (isParalyzer) paralizerLaserLine.enabled = false;
         powerShiled.SetActive(false);
         closeBattleShips.Clear();

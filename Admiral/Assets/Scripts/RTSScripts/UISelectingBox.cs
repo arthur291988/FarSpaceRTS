@@ -83,7 +83,7 @@ public class UISelectingBox : Singleton<UISelectingBox>
 
 
                 startPos = _touch.position;
-                if (checkIfTouchNotInsideUIPanel(_touch.position)) toolsPanelIsTouched = true;
+                if (!checkIfTouchNotInsideUIPanel(_touch.position)) toolsPanelIsTouched = true;
                 //WHEN MEGA ATTCK IS CONTROLLED BY PLAYER
                 //{
                 //    //chosenCruisers.Clear();

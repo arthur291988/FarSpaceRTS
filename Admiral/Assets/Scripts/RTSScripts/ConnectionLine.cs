@@ -54,8 +54,10 @@ public class ConnectionLine : MonoBehaviour
     }
 
     public void setTheSpeedOfTransporter() {
-        if (stations[0].stationCurrentLevel > stations[1].stationCurrentLevel) transporterSpeed = stations[0].stationCurrentLevel + 2;
-        else if (stations[0].stationCurrentLevel < stations[1].stationCurrentLevel) transporterSpeed = stations[1].stationCurrentLevel + 2;
+        if (stations[0].stationCurrentLevel > stations[1].stationCurrentLevel) 
+            transporterSpeed = stations[0].stationCurrentLevel == 0 ? 6 : stations[0].stationCurrentLevel == 1 ? 6.5f : stations[0].stationCurrentLevel == 2 ? 7 : 7.5f;
+        else if (stations[0].stationCurrentLevel < stations[1].stationCurrentLevel)
+            transporterSpeed = stations[1].stationCurrentLevel == 0 ? 6 : stations[1].stationCurrentLevel == 1 ? 6.5f : stations[1].stationCurrentLevel == 2 ? 7 : 7.5f;
         else {
             transporterSpeed = stations[1].stationCurrentLevel == 0 ? 6 : stations[1].stationCurrentLevel == 1 ? 6.5f : stations[1].stationCurrentLevel == 2 ? 7 : 7.5f;
         }

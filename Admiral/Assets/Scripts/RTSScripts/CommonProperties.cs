@@ -162,8 +162,8 @@ public class CommonProperties : MonoBehaviour
     public static int enrgy2to3Upgrd = 3000;//600;
 
     public static int gun0to1Upgrd = 500;//200;
-    public static int gun1to2Upgrd = 1200;//350;
-    public static int gun2to3Upgrd = 1800;//500;
+    public static int gun1to2Upgrd = 800;//350;
+    public static int gun2to3Upgrd = 1200;//500;
 
     public static float gun1MaxAttackTime = 3.5f;
     public static float gun1MinAttackTime = 2.5f;

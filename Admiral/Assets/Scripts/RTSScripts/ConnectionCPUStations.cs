@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ConnectionCPUStations : MonoBehaviour
 {
-    private const int BASE_STATION_DEFENCE_SHIPS_COUNT = 6;
-    private const int MINIMUM_ENENRGY_TO_START_STATION_UPGRADE_LOOP = 250;
-    private const int MINIMUM_ENENRGY_TO_START_GUN_UPGRADE_LOOP = 200;
-    private const int MINIMUM_ENENRGY_TO_START_SHIP_PRODUCE_LOOP = 100;
+    private const int BASE_STATION_DEFENCE_SHIPS_COUNT = 12;
+    //private const int MINIMUM_ENENRGY_TO_START_STATION_UPGRADE_LOOP = 250;
+    //private const int MINIMUM_ENENRGY_TO_START_GUN_UPGRADE_LOOP = 200;
+    //private const int MINIMUM_ENENRGY_TO_START_SHIP_PRODUCE_LOOP = 100;
 
     [HideInInspector]
     public static GameObject ObjectPulled;
@@ -190,144 +190,188 @@ public class ConnectionCPUStations : MonoBehaviour
 
     public static void distributeGroupEnergy(List<StationClass> groupsWhereTheStationIs)
     {
-        Debug.Log("Before "+CommonProperties.energyOfStationGroups[groupsWhereTheStationIs]);
-        //first is tho provide all stations with defence minimum ships
+        //first is to provide all stations with defence minimum ships
         for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
         {
-            if (groupsWhereTheStationIs[i].ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(1);
+            //defence minimum increases if the station level is higer
+            if (groupsWhereTheStationIs[i].ShipsAssigned < (BASE_STATION_DEFENCE_SHIPS_COUNT+groupsWhereTheStationIs[i].stationCurrentLevel)) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(1);
         }
 
-        //second is to capture as more as possible stars
-        if (CommonProperties.stars.Count > 0)
+        int possibleConnections = 0;
+        for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
         {
-            if (groupsWhereTheStationIs.Count > 2)
+            groupsWhereTheStationIs[i].checkIfStationCanConnect();
+            if (groupsWhereTheStationIs[i].stationToConnect != null)
             {
-                if (Random.Range(0, 10) == 0)
+                if (groupsWhereTheStationIs[i].energyToConnection <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
                 {
-                    for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
-                    {
-                        if (groupsWhereTheStationIs[i].ShipsAssigned < groupsWhereTheStationIs[i].ShipsLimit) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(2);
-                    }
+                    CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] -= groupsWhereTheStationIs[i].energyToConnection;
+                    setConnections(groupsWhereTheStationIs[i], groupsWhereTheStationIs[i].stationToConnect);
                 }
-                else
-                {
-                    int possibleConnections = 0;
-                    for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
-                    {
-                        groupsWhereTheStationIs[i].checkIfStationCanConnect();
-                        if (groupsWhereTheStationIs[i].stationToConnect != null)
-                        {
-                            if (groupsWhereTheStationIs[i].energyToConnection <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
-                            {
-                                CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] -= groupsWhereTheStationIs[i].energyToConnection;
-                                setConnections(groupsWhereTheStationIs[i], groupsWhereTheStationIs[i].stationToConnect);
-                            }
-                            else possibleConnections++;
-                        }
-                    }
-
-                    if (possibleConnections == 0)
-                    {
-                        upgradeOrProduceShips(groupsWhereTheStationIs);
-                    }
-                }
-            }
-            else
-            {
-                if (Random.Range(0, 5) > 0)
-                {
-                    for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
-                    {
-                        if (groupsWhereTheStationIs[i].ShipsAssigned < groupsWhereTheStationIs[i].ShipsLimit) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(2);
-                    }
-                }
-                else
-                {
-                    int possibleConnections = 0;
-                    for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
-                    {
-                        groupsWhereTheStationIs[i].checkIfStationCanConnect();
-                        if (groupsWhereTheStationIs[i].stationToConnect != null)
-                        {
-                            if (groupsWhereTheStationIs[i].energyToConnection <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
-                            {
-                                CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] -= groupsWhereTheStationIs[i].energyToConnection;
-                                setConnections(groupsWhereTheStationIs[i], groupsWhereTheStationIs[i].stationToConnect);
-                            }
-                            else possibleConnections++;
-                        }
-                    }
-
-                    if (possibleConnections == 0)
-                    {
-                        upgradeOrProduceShips(groupsWhereTheStationIs);
-                    }
-                }
+                else possibleConnections++;
             }
         }
 
-        //third is connections, upgrades, and guns
-        else {
-            //if there is any possiable connections and even if there is no enough energy yet, the goup accumulate the energy
-            int possibleConnections = 0;
-            for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
-            {
-                groupsWhereTheStationIs[i].checkIfStationCanConnect();
-                if (groupsWhereTheStationIs[i].stationToConnect != null)
-                {
-                    if (groupsWhereTheStationIs[i].energyToConnection <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
-                    {
-                        CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] -= groupsWhereTheStationIs[i].energyToConnection;
-                        setConnections(groupsWhereTheStationIs[i], groupsWhereTheStationIs[i].stationToConnect);
-                    }
-                    else possibleConnections++;
-                }
-            }
-
-            if (possibleConnections == 0)
-            {
-                upgradeOrProduceShips(groupsWhereTheStationIs);
-            }
+        if (possibleConnections == 0)
+        {
+            upgradeOrProduceShips(groupsWhereTheStationIs);
         }
 
-        Debug.Log("After " + CommonProperties.energyOfStationGroups[groupsWhereTheStationIs]);
+        ////second is to capture as more as possible stars
+        //if (CommonProperties.stars.Count > 0)
+        //{
+        //    if (groupsWhereTheStationIs.Count > 2)
+        //    {
+        //        if (Random.Range(0, 10) == 0)
+        //        {
+        //            for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //            {
+        //                if (groupsWhereTheStationIs[i].ShipsAssigned < groupsWhereTheStationIs[i].ShipsLimit) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(2);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            int possibleConnections = 0;
+        //            for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //            {
+        //                groupsWhereTheStationIs[i].checkIfStationCanConnect();
+        //                if (groupsWhereTheStationIs[i].stationToConnect != null)
+        //                {
+        //                    if (groupsWhereTheStationIs[i].energyToConnection <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
+        //                    {
+        //                        CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] -= groupsWhereTheStationIs[i].energyToConnection;
+        //                        setConnections(groupsWhereTheStationIs[i], groupsWhereTheStationIs[i].stationToConnect);
+        //                    }
+        //                    else possibleConnections++;
+        //                }
+        //            }
+
+        //            if (possibleConnections == 0)
+        //            {
+        //                upgradeOrProduceShips(groupsWhereTheStationIs);
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (Random.Range(0, 5) > 0)
+        //        {
+        //            for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //            {
+        //                if (groupsWhereTheStationIs[i].ShipsAssigned < groupsWhereTheStationIs[i].ShipsLimit) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(2);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            int possibleConnections = 0;
+        //            for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //            {
+        //                groupsWhereTheStationIs[i].checkIfStationCanConnect();
+        //                if (groupsWhereTheStationIs[i].stationToConnect != null)
+        //                {
+        //                    if (groupsWhereTheStationIs[i].energyToConnection <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
+        //                    {
+        //                        CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] -= groupsWhereTheStationIs[i].energyToConnection;
+        //                        setConnections(groupsWhereTheStationIs[i], groupsWhereTheStationIs[i].stationToConnect);
+        //                    }
+        //                    else possibleConnections++;
+        //                }
+        //            }
+
+        //            if (possibleConnections == 0)
+        //            {
+        //                upgradeOrProduceShips(groupsWhereTheStationIs);
+        //            }
+        //        }
+        //    }
+        //}
+
+        ////third is connections, upgrades, and guns
+        //else {
+        //    //if there is any possiable connections and even if there is no enough energy yet, the goup accumulate the energy
+        //    int possibleConnections = 0;
+        //    for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //    {
+        //        groupsWhereTheStationIs[i].checkIfStationCanConnect();
+        //        if (groupsWhereTheStationIs[i].stationToConnect != null)
+        //        {
+        //            if (groupsWhereTheStationIs[i].energyToConnection <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
+        //            {
+        //                CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] -= groupsWhereTheStationIs[i].energyToConnection;
+        //                setConnections(groupsWhereTheStationIs[i], groupsWhereTheStationIs[i].stationToConnect);
+        //            }
+        //            else possibleConnections++;
+        //        }
+        //    }
+
+        //    if (possibleConnections == 0)
+        //    {
+        //        upgradeOrProduceShips(groupsWhereTheStationIs);
+        //    }
+        //}
+
+        //Debug.Log("After " + CommonProperties.energyOfStationGroups[groupsWhereTheStationIs]);
     }
 
     private static void upgradeOrProduceShips(List<StationClass> groupsWhereTheStationIs)
     {
-        if (Random.Range(0, 5) > 0)
+        int possibleStationUpgrades = 0;
+        for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
         {
-            if (CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] >= MINIMUM_ENENRGY_TO_START_STATION_UPGRADE_LOOP)
+            if (groupsWhereTheStationIs[i].energyToNextUpgradeOfStation <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationCurrentLevel < groupsWhereTheStationIs[i].upgradeCounts)
             {
-                for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
-                {
-                    if (groupsWhereTheStationIs[i].energyToNextUpgradeOfStation <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationCurrentLevel < groupsWhereTheStationIs[i].upgradeCounts)
-                    {
-                        groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(3);
-                    }
-                }
+                groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(3);
             }
-            if (Random.Range(0, 5) == 0 && CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] >= MINIMUM_ENENRGY_TO_START_GUN_UPGRADE_LOOP)
+            if (groupsWhereTheStationIs[i].stationCurrentLevel < groupsWhereTheStationIs[i].upgradeCounts) possibleStationUpgrades++;
+        }
+        if (possibleStationUpgrades == 0)
+        {
+            for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
             {
-                for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+                if (groupsWhereTheStationIs[i].energyToNextUpgradeOfGun <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationGunLevel < groupsWhereTheStationIs[i].GunUpgradeCounts)
                 {
-                    if (groupsWhereTheStationIs[i].energyToNextUpgradeOfGun <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationGunLevel < groupsWhereTheStationIs[i].GunUpgradeCounts)
-                    {
-                        groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(4);
-                    }
+                    groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(4);
                 }
             }
         }
-        else
+        for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
         {
-            if (CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] >= MINIMUM_ENENRGY_TO_START_SHIP_PRODUCE_LOOP)
-            {
-                for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
-                {
-                    if (groupsWhereTheStationIs[i].ShipsAssigned < groupsWhereTheStationIs[i].ShipsLimit) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(2);
-                }
-            }
+            if (groupsWhereTheStationIs[i].ShipsAssigned < groupsWhereTheStationIs[i].ShipsLimit) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(2);
         }
+
+        //if (Random.Range(0, 5) > 0)
+        //{
+        //    if (CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] >= MINIMUM_ENENRGY_TO_START_STATION_UPGRADE_LOOP)
+        //    {
+        //        for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //        {
+        //            if (groupsWhereTheStationIs[i].energyToNextUpgradeOfStation <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationCurrentLevel < groupsWhereTheStationIs[i].upgradeCounts)
+        //            {
+        //                groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(3);
+        //            }
+        //        }
+        //    }
+        //    if (Random.Range(0, 5) == 0 && CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] >= MINIMUM_ENENRGY_TO_START_GUN_UPGRADE_LOOP)
+        //    {
+        //        for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //        {
+        //            if (groupsWhereTheStationIs[i].energyToNextUpgradeOfGun <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationGunLevel < groupsWhereTheStationIs[i].GunUpgradeCounts)
+        //            {
+        //                groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(4);
+        //            }
+        //        }
+        //    }
+        //}
+        //else
+        //{
+        //    if (CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] >= MINIMUM_ENENRGY_TO_START_SHIP_PRODUCE_LOOP)
+        //    {
+        //        for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //        {
+        //            if (groupsWhereTheStationIs[i].ShipsAssigned < groupsWhereTheStationIs[i].ShipsLimit) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(2);
+        //        }
+        //    }
+        //}
     }
 
 }

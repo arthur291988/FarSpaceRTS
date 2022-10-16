@@ -98,7 +98,7 @@ public class StationClass : MonoBehaviour
     //[HideInInspector]
     //public List<Vector3> squardPositions;
     [HideInInspector]
-    public const float fleetGatherRadius = 14f;
+    public const float fleetGatherRadius = 30f;
     [HideInInspector]
     public float fillingSpeed; //TO ASSIGN WHILE PULLLING
 
@@ -370,7 +370,7 @@ public class StationClass : MonoBehaviour
                         station.groupWhereTheStationIs = CommonProperties.connectionLines[CPUNumber][0].stations[1].groupWhereTheStationIs;
                         CommonProperties.energyOfStationGroups[station.groupWhereTheStationIs] += station.energyOfStation; //no need to add other energyes cause they are zero at this point since were zero while connection
                     }
-                    CommonProperties.StationGroups[stationToConnect.CPUNumber].Remove(tempClass);
+                    CommonProperties.StationGroups[CPUNumber].Remove(tempClass);
                     CommonProperties.energyOfStationGroups.Remove(tempClass);
                 }
             }
@@ -400,8 +400,8 @@ public class StationClass : MonoBehaviour
                             newConnection.Add(CommonProperties.connectionLines[CPUNumber][i].stations[1]);
                             CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs = newConnection;
                             CommonProperties.energyOfStationGroups.Add(newConnection, 0);
-                            //no need to add other energyes cause they are zero at this point since were not enough while connection
-                            CommonProperties.energyOfStationGroups[newConnection] = newConnection[0].energyOfStation + newConnection[1].energyOfStation; 
+                            ////no need to add other energyes cause they are zero at this point since were not enough while connection
+                            //CommonProperties.energyOfStationGroups[newConnection] = newConnection[0].energyOfStation + newConnection[1].energyOfStation; 
                             //setting the limit of energy for station group
                             CommonProperties.energyLimitOfStationGroups.Add(newConnection, CommonProperties.getTheEnergyLimitOfStationsGroup(newConnection));
 
@@ -425,6 +425,7 @@ public class StationClass : MonoBehaviour
                         {
                             //adding the null-group station to group of stations of second (not null-group) station
                             CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs = CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs;
+                            CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs.Add(CommonProperties.connectionLines[CPUNumber][i].stations[0]);
 
                             //start to check adjacent lines if there is some
                             if (CommonProperties.connectionLines[CPUNumber][i].stations.Contains(CommonProperties.connectionLines[CPUNumber][y].stations[0]) ||
@@ -434,8 +435,8 @@ public class StationClass : MonoBehaviour
                                 {
                                     if (!CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs.Contains(station) && station.groupWhereTheStationIs == null)
                                     {
-                                        station.groupWhereTheStationIs = CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs;
-                                        CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs.Add(station);
+                                        station.groupWhereTheStationIs = CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs;
+                                        CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs.Add(station);
                                     }
                                 }
                             }
@@ -470,9 +471,9 @@ public class StationClass : MonoBehaviour
                                 {
                                     CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs.Add(station);
                                     station.groupWhereTheStationIs = CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs;
-                                    CommonProperties.energyOfStationGroups[station.groupWhereTheStationIs] += station.energyOfStation; //no need to add other energyes cause they are zero at this point since were zero while connection
+                                    //CommonProperties.energyOfStationGroups[station.groupWhereTheStationIs] += station.energyOfStation; //no need to add other energyes cause they are zero at this point since were zero while connection
                                 }
-                                CommonProperties.StationGroups[stationToConnect.CPUNumber].Remove(tempClass);
+                                CommonProperties.StationGroups[CPUNumber].Remove(tempClass);
                                 CommonProperties.energyOfStationGroups.Remove(tempClass);
                             }
 
@@ -520,7 +521,7 @@ public class StationClass : MonoBehaviour
                 station.energyOfStation += energyOfDiedGroup;
             }
             else if (CommonProperties.CPUStationsDictionary[CPUNumber].Count>0) {
-                StationClass station = new StationClass();
+                StationClass station = null;
                 for (int i = 0; i < CommonProperties.CPUStationsDictionary[CPUNumber].Count; i++)
                 {
                     if (i == 0) station = CommonProperties.CPUStationsDictionary[CPUNumber][i];
