@@ -575,11 +575,20 @@ public class CPUBattleShip : BattleShipClass
         shieldIsOn = false;
     }
 
-    public override void reduceTheHPOfShip(float harmAmount)
+    public override void reduceTheHPOfShip(float harmAmount, BattleShipClass battleShipDestroyedThis, StationClass stationDestroyedThis)
     {
         HP -= harmAmount;
         if (HP <= 4) preBurstEffect();
-        if (HP <= 0) disactivateThisShip();
+        if (HP <= 0)
+        {
+            if (battleShipDestroyedThis != null)
+            {
+                battleShipDestroyedThis.attackLaserLine.enabled = false;
+                if (battleShipDestroyedThis.isParalyzer) battleShipDestroyedThis.paralizerLaserLine.enabled = false;
+            }
+            else if (stationDestroyedThis != null) stationDestroyedThis.attackLaserLine.enabled = false;
+            disactivateThisShip();
+        }
     }
     private void disactivateThisShip()
     {
@@ -632,18 +641,18 @@ public class CPUBattleShip : BattleShipClass
         CommonProperties.CPUBattleShips.Remove(this);
         CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Remove(this);
 
-        StationClass closeStation = getClosestStation();
-        if (closeStation != null)
-        {
-            //if station is defentless it calls all its alive ships back to defend it
-            if (closeStation.stationDefenceFleetLeftByUnits() < 3)
-            {
-                if (CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count > 1)
-                {
-                    closeStation.callForAHelp();
-                }
-            }
-        }
+        //StationClass closeStation = getClosestStation();
+        //if (closeStation != null)
+        //{
+        //    //if station is defentless it calls all its alive ships back to defend it
+        //    if (closeStation.stationDefenceFleetLeftByUnits() < 3)
+        //    {
+        //        if (CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count > 1)
+        //        {
+        //            closeStation.callForAHelp();
+        //        }
+        //    }
+        //}
         gameObject.SetActive(false);
 
 
@@ -761,7 +770,8 @@ public class CPUBattleShip : BattleShipClass
             if (!isParalyzed) StartCoroutine(defenceShieldTurn());
         }
         //to prevent the bug of attacking respawned ship
-        if (shipToAttak != null && shipToAttak.HP <= 0) shipToAttak = null;
+        //if (shipToAttak != null && shipToAttak.HP <= 0) shipToAttak = null;
+        //if (stationToAttak != null && stationToAttak.lifeLineAmount <= -6) stationToAttak = null;
     }
 
     private void FixedUpdate()
@@ -776,13 +786,15 @@ public class CPUBattleShip : BattleShipClass
                 isMoving = false;
             }
         }
-        if (attackLaserLine.enabled && shipToAttak != null)
+        if (attackLaserLine.enabled && shipToAttak != null && shipToAttak.HP > 0)
         {
             attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+            if (shipToAttak.HP <= 0) attackLaserLine.enabled = false;
         }
-        if (isParalyzer && paralizerLaserLine.enabled && shipToAttak != null)
+        if (isParalyzer && paralizerLaserLine.enabled && shipToAttak != null && shipToAttak.HP > 0)
         {
             paralizerLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+            if (shipToAttak.HP <= 0) paralizerLaserLine.enabled = false;
         }
     }
 }

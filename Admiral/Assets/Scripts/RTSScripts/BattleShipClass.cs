@@ -106,7 +106,7 @@ public class BattleShipClass : MonoBehaviour
     [HideInInspector]
     public int paralizerShotCounter;
 
-    public virtual void reduceTheHPOfShip(float harmAmount)
+    public virtual void reduceTheHPOfShip(float harmAmount, BattleShipClass battleShipDestroyedThis, StationClass stationDestroyedThis)
     {
     }
 

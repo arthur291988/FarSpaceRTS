@@ -13,7 +13,7 @@ public class StarController : MonoBehaviour
     private float[] fillAmountOfAll= new float[5];
 
     private float fillingSpeed;
-    private float recoverySpeed;
+    //private float recoverySpeed;
 
     [HideInInspector]
     public GameObject ObjectPulled;
@@ -23,13 +23,15 @@ public class StarController : MonoBehaviour
     [HideInInspector]
     public byte upgradeCount;
 
-    private float HPInscreaseTime;
-    private float HPInscreaseTimer;
+    private bool starIsDead;
+
+    //private float HPInscreaseTime;
+    //private float HPInscreaseTimer;
 
 
     private void OnEnable()
     {
-
+        starIsDead = false;
         for (int i = 0; i < fillAmountOfAll.Length; i++) fillAmountOfAll[i] = -6f;
         XPositionOfFillingLine = -6f;
         fillingLine.localPosition = new Vector3(XPositionOfFillingLine,0,0);
@@ -38,61 +40,67 @@ public class StarController : MonoBehaviour
         if (name.Contains("1")) {
             upgradeCount = 1;
             fillingSpeed = CommonProperties.star1FillingReducer;
-            HPInscreaseTime = CommonProperties.Station1EnergyProduceTime;
+            //HPInscreaseTime = CommonProperties.Station1EnergyProduceTime;
         }
         else if (name.Contains("2"))
         {
             upgradeCount = 2;
             fillingSpeed = CommonProperties.star2FillingReducer;
-            HPInscreaseTime = CommonProperties.Station2EnergyProduceTime;
+            //HPInscreaseTime = CommonProperties.Station2EnergyProduceTime;
         }
         else if (name.Contains("3"))
         {
             upgradeCount = 3;
             fillingSpeed = CommonProperties.star3FillingReducer;
-            HPInscreaseTime = CommonProperties.Station3EnergyProduceTime;
+            //HPInscreaseTime = CommonProperties.Station3EnergyProduceTime;
         }
         else
         {
             upgradeCount = 0;
             fillingSpeed = CommonProperties.star0FillingReducer;
-            HPInscreaseTime = CommonProperties.Station3EnergyProduceTime;
+            //HPInscreaseTime = CommonProperties.Station3EnergyProduceTime;
         }
-        HPInscreaseTimer = HPInscreaseTime;
-        recoverySpeed = 2 - fillingSpeed;
+        //HPInscreaseTimer = HPInscreaseTime;
+        //recoverySpeed = 2 - fillingSpeed;
     }
 
 
     public void reduceTheHPOfStar(float fillAmount, int CPUNumber)
     {
-        float tempFloat=-6f;
-        //reducing the fill amount of others 
-        for (int i = 0; i < fillAmountOfAll.Length; i++)
+        if (!starIsDead)
         {
-            if (i != CPUNumber)
+            float tempFloat = -6f;
+            //reducing the fill amount of others 
+            for (int i = 0; i < fillAmountOfAll.Length; i++)
             {
-                if (fillAmountOfAll[i] > -6) {
-                    if (fillAmountOfAll[i]> tempFloat )
+                if (i != CPUNumber)
+                {
+                    if (fillAmountOfAll[i] > -6)
                     {
-                        tempFloat = fillAmountOfAll[i];
-                        fillAmountOfAll[i] -= fillAmount * fillingSpeed;
-                        if (fillAmountOfAll[i] < -6) fillAmountOfAll[i] = -6;
+                        if (fillAmountOfAll[i] > tempFloat)
+                        {
+                            tempFloat = fillAmountOfAll[i];
+                            fillAmountOfAll[i] -= fillAmount * fillingSpeed;
+                            if (fillAmountOfAll[i] < -6) fillAmountOfAll[i] = -6;
 
-                        fillingLine.localPosition = new Vector3(fillAmountOfAll[i], 0, 0);
+                            fillingLine.localPosition = new Vector3(fillAmountOfAll[i], 0, 0);
+                        }
+                        else fillAmountOfAll[i] = -6;
+
+                        return; //stop the function cause someone has the shots on star
                     }
-                    else fillAmountOfAll[i] = -6;
-
-                    return; //stop the function cause someone has the shots on star
                 }
             }
+            //increasing the fill amount the one that makes a shot
+            fillAmountOfAll[CPUNumber] += fillAmount * fillingSpeed;
+            fillingLine.localPosition = new Vector3(fillAmountOfAll[CPUNumber], 0, 0);
+            if (fillAmountOfAll[CPUNumber] > 0) fillAmountOfAll[CPUNumber] = 0;
+            if (fillAmountOfAll[CPUNumber] >= 0)
+            {
+                starIsDead = true;
+                disactivateThisStar(CPUNumber);
+            }
         }
-
-        //increasing the fill amount the one that makes a shot
-        fillAmountOfAll[CPUNumber] += fillAmount*fillingSpeed;
-        fillingLine.localPosition = new Vector3(fillAmountOfAll[CPUNumber], 0, 0);
-        if (fillAmountOfAll[CPUNumber] > 0) fillAmountOfAll[CPUNumber] = 0;
-        if (fillAmountOfAll[CPUNumber] >= 0) disactivateThisStar(CPUNumber);
-
     }
 
     private void disactivateThisStar(int CPUNumber)

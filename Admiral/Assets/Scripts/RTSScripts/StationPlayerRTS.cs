@@ -227,7 +227,7 @@ public class StationPlayerRTS : StationClass
 
         if (shipToAttak != null)
         {
-            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm);
+            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm,null,this);
         }
         
 
@@ -553,6 +553,8 @@ public class StationPlayerRTS : StationClass
         station.groupWhereTheStationIs = groupWhereTheStationIs;
         groupWhereTheStationIs.Remove(this);
         station.groupWhereTheStationIs.Add(station);
+        //setting the limit of energy for station group
+        CommonProperties.energyLimitOfStationGroups[groupWhereTheStationIs] = CommonProperties.getTheEnergyLimitOfStationsGroup(groupWhereTheStationIs);
         for (int i = 0; i < CommonProperties.connectionLines[CPUNumber].Count; i++)
         {
             if (CommonProperties.connectionLines[CPUNumber][i].stations.Contains(this))
@@ -621,6 +623,7 @@ public class StationPlayerRTS : StationClass
         if (attackLaserLine.enabled && shipToAttak != null)
         {
             attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+
         }
         if (attackMode && shipToAttak != null && stationCurrentLevel>0 && stationGunLevel==GunUpgradeCounts) {
             if (gunSphereParentTransform.rotation!=Quaternion.LookRotation(shipToAttak.shipTransform.position- gunSphereParentTransform.position, Vector3.up)) 

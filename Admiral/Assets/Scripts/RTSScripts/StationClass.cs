@@ -98,7 +98,7 @@ public class StationClass : MonoBehaviour
     //[HideInInspector]
     //public List<Vector3> squardPositions;
     [HideInInspector]
-    public const float fleetGatherRadius = 30f;
+    public const float fleetGatherRadius = 60f;
     [HideInInspector]
     public float fillingSpeed; //TO ASSIGN WHILE PULLLING
 
@@ -586,6 +586,7 @@ public class StationClass : MonoBehaviour
 
     public void reduceTheHPOfStation(float fillAmount)
     {
+        if (CPUNumber != 0 && lifeLineAmount == 0) callForAHelp(); 
         lifeLineAmount -= fillAmount * fillingSpeed;
         if (lifeLineAmount <= -6)
         {

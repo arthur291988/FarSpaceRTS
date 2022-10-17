@@ -407,7 +407,7 @@ public class PlayerBattleShip : BattleShipClass
             //    tempShip.reduceTheHPOfShip(harm);
 
             //}
-            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm);
+            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm,this,null);
         }
         else if (stationToAttak != null)
         {
@@ -585,10 +585,19 @@ public class PlayerBattleShip : BattleShipClass
     //    BurstReal.SetActive(true);
     //}
 
-    public override void reduceTheHPOfShip(float harmAmount) {
+    public override void reduceTheHPOfShip(float harmAmount, BattleShipClass battleShipDestroyedThis, StationClass stationDestroyedThis) {
         HP -= harmAmount;
         if (HP <= 4) preBurstEffect();
-        if (HP <= 0) disactivateThisShip();
+        if (HP <= 0)
+        {
+            if (battleShipDestroyedThis != null)
+            {
+                battleShipDestroyedThis.attackLaserLine.enabled = false;
+                if (battleShipDestroyedThis.isParalyzer) battleShipDestroyedThis.paralizerLaserLine.enabled = false;
+            }
+            else if (stationDestroyedThis != null) stationDestroyedThis.attackLaserLine.enabled = false;
+            disactivateThisShip();
+        }
     }
     #endregion reducing the HP and disactivating
 
@@ -624,7 +633,8 @@ public class PlayerBattleShip : BattleShipClass
         }
 
         //to prevent the bug of attacking respawned ship
-        if (shipToAttak != null && shipToAttak.HP <= 0) shipToAttak = null;
+        //if (shipToAttak != null && shipToAttak.HP <= 0) shipToAttak = null;
+        //if (stationToAttak != null && stationToAttak.lifeLineAmount <= -6) stationToAttak = null;
     }
 
     private void FixedUpdate()
@@ -644,7 +654,7 @@ public class PlayerBattleShip : BattleShipClass
         {
             attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
         }
-        if (isParalyzer&& paralizerLaserLine.enabled && shipToAttak != null)
+        if (isParalyzer&& paralizerLaserLine.enabled && shipToAttak != null )
         {
             paralizerLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
         }

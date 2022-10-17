@@ -1756,22 +1756,39 @@ public class StationCPU : StationClass
     public override void callForAHelp()
     {   //group help is possible only if there are more than 1 CPU stations of this CPU
         
-            int groupFleet = 0;
-            foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1] )
-            {
-                if(station != this) groupFleet += station.fleetOfStationMoreThanDefenceMinimum();
-            }
-            if (groupFleet >0)
-            {
-                foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1])
-                {
-                    if (station != this && station.fleetOfStationMoreThanDefenceMinimum() > 0)
-                    {
-                        station.externalCallForExtraFleetAttackOrDefence(this);
-                    }
-                }
-            }
-        
+            //int groupFleet = 0;
+            //foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1] )
+            //{
+            //    if(station != this) groupFleet += station.fleetOfStationMoreThanDefenceMinimum();
+            //}
+            //if (groupFleet >0)
+            //{
+            //    foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1])
+            //    {
+            //        if (station != this && station.fleetOfStationMoreThanDefenceMinimum() > 0)
+            //        {
+            //            station.externalCallForExtraFleetAttackOrDefence(this);
+            //        }
+            //    }
+            //}
+
+        foreach (CPUBattleShip CPUShip in CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1]) shipsToGiveOrderCommandOfStation.Add(CPUShip);
+        for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+        {
+            Vector3 newPos;
+            float step = (Mathf.PI * 2) / shipsToGiveOrderCommandOfStation.Count; // отступ
+            newPos.x = stationPosition.x + Mathf.Sin(step * i) * radiusOfShipsRingAroundStation; // по оси X
+            newPos.z = stationPosition.z + Mathf.Cos(step * i) * radiusOfShipsRingAroundStation; // по оси Z
+            newPos.y = 0; // по оси Y всегда 0
+            squardPositions.Add(newPos);
+        }
+        for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+        {
+            shipsToGiveOrderCommandOfStation[i].giveAShipMoveOrder(squardPositions[i], null);
+        }
+
+        shipsToGiveOrderCommandOfStation.Clear();
+        squardPositions.Clear();
     }
 
     private void collectTheCloseEnemyShips()
@@ -1844,7 +1861,7 @@ public class StationCPU : StationClass
 
         if (shipToAttak != null)
         {
-            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm);
+            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm, null, this);
         }
 
         closeBattleShips.Clear();
