@@ -43,8 +43,8 @@ public class BulletPlayerGun : MonoBehaviour
             disactivateBullet();
             if (other.CompareTag("BattleShip"))
             {
-               if (layerOfOther > 10) other.GetComponent<CPUBattleShip>().reduceTheHPOfShip(harm);
-               else other.GetComponent<PlayerBattleShip>().reduceTheHPOfShip(harm);
+               if (layerOfOther > 10) other.GetComponent<CPUBattleShip>().reduceTheHPOfShip(harm,null,null);
+               else other.GetComponent<PlayerBattleShip>().reduceTheHPOfShip(harm,null,null);
             }
             //else if (other.CompareTag("PowerShield")) { 
             

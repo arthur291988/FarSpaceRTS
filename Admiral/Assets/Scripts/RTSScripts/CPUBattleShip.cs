@@ -423,7 +423,7 @@ public class CPUBattleShip : BattleShipClass
                 //    tempShip.reduceTheHPOfShip(harm);
 
                 //}
-                if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm);
+                if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm,this,null);
             }
         }
         //else if (gunToAttak != null) {

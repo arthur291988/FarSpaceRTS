@@ -355,7 +355,6 @@ public class StationCPU : StationClass
             {
                 energyOfStationToSetConnection += energyOfStationToUPGrade;
                 energyOfStationToUPGrade = 0;
-                
             }
             else
             {
@@ -1036,6 +1035,7 @@ public class StationCPU : StationClass
                 }
             }
         }
+        
     }
         
     public void upgradeStation(int nextStationLevel)
@@ -1395,42 +1395,56 @@ public class StationCPU : StationClass
         //    if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, getTheStarClosestToStation().starPosition);
         //}
 
-        //attack star only if it is one step close to station 
-        StarController closestStar = getTheStarClosestToStation();
-        if (closestStar != null)
+        //priority task is to defence of station under attack
+        StationClass stationUnderDefence = CPUfleetManager.getTheStationUNderDefence(CPUNumber);
+        if (stationUnderDefence != null)
         {
             getherTheReferenceToFleetOfStationExceptDefenceMinimum();
-            if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, closestStar.starPosition);
+            if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, stationUnderDefence.stationPosition);
         }
         else
         {
-            getherTheReferenceToFleetOfStationExceptDefenceMinimum();
-            //if there left any ships after defence minimum
-            if (shipsToGiveOrderCommandOfStation.Count > 0)
+            //attack star only if it is one step close to station 
+            StarController closestStar = getTheStarClosestToStation();
+            if (closestStar != null)
             {
-                //group attack is possible only if there are more than 1 CPU stations of this CPU
-                if (CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count > 1)
-                {
-                    int groupFleet = 0;
-                    foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1])
-                    {
-                        if (station!=this) groupFleet += station.fleetOfStationMoreThanDefenceMinimum();
-                    }
-                    groupFleet += shipsToGiveOrderCommandOfStation.Count;
-                    if (groupFleet >= SHIPS_COUNT_MINIMUM_TO_ATTACK)
-                    {
-                        attackWeakestStation();
-                        foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1]) {
-                            if (station != this && station.fleetOfStationMoreThanDefenceMinimum() > 0) {
-                                station.externalCallForExtraFleetAttackOrDefence(stationToAttack);
-                            }
-                        }
-                    }
-                }
-                else if (shipsToGiveOrderCommandOfStation.Count >= SHIPS_COUNT_MINIMUM_TO_ATTACK)
-                {
-                    attackWeakestStation();
-                }
+                getherTheReferenceToFleetOfStationExceptDefenceMinimum();
+                if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, closestStar.starPosition);
+            }
+            else
+            {
+                #region old fleet order system
+                //getherTheReferenceToFleetOfStationExceptDefenceMinimum();
+                ////if there left any ships after defence minimum
+                //if (shipsToGiveOrderCommandOfStation.Count > 0)
+                //{
+                //    //group attack is possible only if there are more than 1 CPU stations of this CPU
+                //    if (CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count > 1)
+                //    {
+                //        int groupFleet = 0;
+                //        foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1])
+                //        {
+                //            if (station!=this) groupFleet += station.fleetOfStationMoreThanDefenceMinimum();
+                //        }
+                //        groupFleet += shipsToGiveOrderCommandOfStation.Count;
+                //        if (groupFleet >= SHIPS_COUNT_MINIMUM_TO_ATTACK)
+                //        {
+                //            attackWeakestStation();
+                //            foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1]) {
+                //                if (station != this && station.fleetOfStationMoreThanDefenceMinimum() > 0) {
+                //                    station.externalCallForExtraFleetAttackOrDefence(stationToAttack);
+                //                }
+                //            }
+                //        }
+                //    }
+                //    else if (shipsToGiveOrderCommandOfStation.Count >= SHIPS_COUNT_MINIMUM_TO_ATTACK)
+                //    {
+                //        attackWeakestStation();
+                //    }
+                //}
+
+                #endregion
+                CPUfleetManager.preapareForAttack(CPUNumber, stationPosition);
             }
         }
 
@@ -1555,56 +1569,56 @@ public class StationCPU : StationClass
         #endregion
     }
 
-    public int fleetOfStationMoreThanDefenceMinimum() {
-        int readyToAttackFleet =0;
-        //gatherTheReferencesToShipsOfStationThatNear();
-        gatherTheReferencesToNearShips();
-        if (shipsToGiveOrderCommandOfStation.Count > BASE_STATION_DEFENCE_SHIPS_COUNT)
-        {
-            readyToAttackFleet = shipsToGiveOrderCommandOfStation.Count - BASE_STATION_DEFENCE_SHIPS_COUNT;
-        }
-        shipsToGiveOrderCommandOfStation.Clear();
-        //shipsOfStationThatNear.Clear();
-        return readyToAttackFleet;
-    }
+    //public int fleetOfStationMoreThanDefenceMinimum() {
+    //    int readyToAttackFleet =0;
+    //    //gatherTheReferencesToShipsOfStationThatNear();
+    //    gatherTheReferencesToNearShips();
+    //    if (shipsToGiveOrderCommandOfStation.Count > BASE_STATION_DEFENCE_SHIPS_COUNT)
+    //    {
+    //        readyToAttackFleet = shipsToGiveOrderCommandOfStation.Count - BASE_STATION_DEFENCE_SHIPS_COUNT;
+    //    }
+    //    shipsToGiveOrderCommandOfStation.Clear();
+    //    //shipsOfStationThatNear.Clear();
+    //    return readyToAttackFleet;
+    //}
 
-    public void externalCallForExtraFleetAttackOrDefence(StationClass stattionToAttackParam) {
-        getherTheReferenceToFleetOfStationExceptDefenceMinimum();
-        if (shipsToGiveOrderCommandOfStation.Count>0) sendTheFleetToThePoint(stationPosition, stattionToAttackParam.stationPosition);
-    }
+    //public void externalCallForExtraFleetAttackOrDefence(StationClass stattionToAttackParam) {
+    //    getherTheReferenceToFleetOfStationExceptDefenceMinimum();
+    //    if (shipsToGiveOrderCommandOfStation.Count>0) sendTheFleetToThePoint(stationPosition, stattionToAttackParam.stationPosition);
+    //}
 
-    private void attackWeakestStation() {
-        byte index = 0;
-        stationToAttack = null;
+    //private void attackWeakestStation() {
+    //    byte index = 0;
+    //    stationToAttack = null;
 
-        //List<StationClass> enemyStations = new List<StationClass>();
-        for (int i = 0; i < CommonProperties.allStations.Count; i++)
-        {
-            if (CommonProperties.allStations[i].CPUNumber != CPUNumber)
-            {
-                if (index == 0) stationToAttack = CommonProperties.allStations[i];
-                else
-                {
-                    if ((stationToAttack.stationPosition - stationPosition).sqrMagnitude > (CommonProperties.allStations[i].stationPosition - stationPosition).sqrMagnitude) stationToAttack = CommonProperties.allStations[i];
-                }
-                index++;
-            }
-        }
+    //    //List<StationClass> enemyStations = new List<StationClass>();
+    //    for (int i = 0; i < CommonProperties.allStations.Count; i++)
+    //    {
+    //        if (CommonProperties.allStations[i].CPUNumber != CPUNumber)
+    //        {
+    //            if (index == 0) stationToAttack = CommonProperties.allStations[i];
+    //            else
+    //            {
+    //                if ((stationToAttack.stationPosition - stationPosition).sqrMagnitude > (CommonProperties.allStations[i].stationPosition - stationPosition).sqrMagnitude) stationToAttack = CommonProperties.allStations[i];
+    //            }
+    //            index++;
+    //        }
+    //    }
 
-        //for (int i = 0; i < CommonProperties.allStations.Count; i++)
-        //{
-        //    if (CommonProperties.allStations[i].CPUNumber != CPUNumber)
-        //    {
-        //        if (index == 0) stationToAttack = CommonProperties.allStations[i];
-        //        else if (stationToAttack.stationDefenceFleetPower() > CommonProperties.allStations[i].stationDefenceFleetPower())
-        //        {
-        //            stationToAttack = CommonProperties.allStations[i];
-        //        }
-        //        index++;
-        //    }
-        //}
-        sendTheFleetToThePoint(stationPosition, stationToAttack.stationPosition);
-    }
+    //    //for (int i = 0; i < CommonProperties.allStations.Count; i++)
+    //    //{
+    //    //    if (CommonProperties.allStations[i].CPUNumber != CPUNumber)
+    //    //    {
+    //    //        if (index == 0) stationToAttack = CommonProperties.allStations[i];
+    //    //        else if (stationToAttack.stationDefenceFleetPower() > CommonProperties.allStations[i].stationDefenceFleetPower())
+    //    //        {
+    //    //            stationToAttack = CommonProperties.allStations[i];
+    //    //        }
+    //    //        index++;
+    //    //    }
+    //    //}
+    //    sendTheFleetToThePoint(stationPosition, stationToAttack.stationPosition);
+    //}
 
     private void allignTheShipsAroundStation()
     {
@@ -1634,7 +1648,8 @@ public class StationCPU : StationClass
     }
 
     public override void sendTheFleetToThePoint(Vector3 startPoint, Vector3 destinationPoint) {
-        Vector3 moveToPoint = destinationPoint + (startPoint - destinationPoint).normalized * 7;
+        //that means that fleet will not placed in center of enemy station or star or ally station, it will stay just 7 steps before
+        Vector3 moveToPoint = destinationPoint + (startPoint - destinationPoint).normalized * 7; 
         float stepForOuterRadius = 1;
 
         if (shipsToGiveOrderCommandOfStation.Count > 1)
@@ -1753,43 +1768,43 @@ public class StationCPU : StationClass
         //if ((dotClosestToMovePoint - destinationPoint).magnitude > nearHexMaxDistance) determineBestWayToMovePoint(dotClosestToMovePoint, destinationPoint);
     }
 
-    public override void callForAHelp()
-    {   //group help is possible only if there are more than 1 CPU stations of this CPU
+    //public override void callForAHelp()
+    //{   //group help is possible only if there are more than 1 CPU stations of this CPU
         
-            //int groupFleet = 0;
-            //foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1] )
-            //{
-            //    if(station != this) groupFleet += station.fleetOfStationMoreThanDefenceMinimum();
-            //}
-            //if (groupFleet >0)
-            //{
-            //    foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1])
-            //    {
-            //        if (station != this && station.fleetOfStationMoreThanDefenceMinimum() > 0)
-            //        {
-            //            station.externalCallForExtraFleetAttackOrDefence(this);
-            //        }
-            //    }
-            //}
+    //        //int groupFleet = 0;
+    //        //foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1] )
+    //        //{
+    //        //    if(station != this) groupFleet += station.fleetOfStationMoreThanDefenceMinimum();
+    //        //}
+    //        //if (groupFleet >0)
+    //        //{
+    //        //    foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1])
+    //        //    {
+    //        //        if (station != this && station.fleetOfStationMoreThanDefenceMinimum() > 0)
+    //        //        {
+    //        //            station.externalCallForExtraFleetAttackOrDefence(this);
+    //        //        }
+    //        //    }
+    //        //}
 
-        foreach (CPUBattleShip CPUShip in CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1]) shipsToGiveOrderCommandOfStation.Add(CPUShip);
-        for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
-        {
-            Vector3 newPos;
-            float step = (Mathf.PI * 2) / shipsToGiveOrderCommandOfStation.Count; // отступ
-            newPos.x = stationPosition.x + Mathf.Sin(step * i) * radiusOfShipsRingAroundStation; // по оси X
-            newPos.z = stationPosition.z + Mathf.Cos(step * i) * radiusOfShipsRingAroundStation; // по оси Z
-            newPos.y = 0; // по оси Y всегда 0
-            squardPositions.Add(newPos);
-        }
-        for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
-        {
-            shipsToGiveOrderCommandOfStation[i].giveAShipMoveOrder(squardPositions[i], null);
-        }
+    //    foreach (CPUBattleShip CPUShip in CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1]) shipsToGiveOrderCommandOfStation.Add(CPUShip);
+    //    for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+    //    {
+    //        Vector3 newPos;
+    //        float step = (Mathf.PI * 2) / shipsToGiveOrderCommandOfStation.Count; // отступ
+    //        newPos.x = stationPosition.x + Mathf.Sin(step * i) * radiusOfShipsRingAroundStation; // по оси X
+    //        newPos.z = stationPosition.z + Mathf.Cos(step * i) * radiusOfShipsRingAroundStation; // по оси Z
+    //        newPos.y = 0; // по оси Y всегда 0
+    //        squardPositions.Add(newPos);
+    //    }
+    //    for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+    //    {
+    //        shipsToGiveOrderCommandOfStation[i].giveAShipMoveOrder(squardPositions[i], null);
+    //    }
 
-        shipsToGiveOrderCommandOfStation.Clear();
-        squardPositions.Clear();
-    }
+    //    shipsToGiveOrderCommandOfStation.Clear();
+    //    squardPositions.Clear();
+    //}
 
     private void collectTheCloseEnemyShips()
     {

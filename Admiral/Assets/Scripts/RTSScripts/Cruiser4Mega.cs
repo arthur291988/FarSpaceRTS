@@ -45,7 +45,7 @@ public class Cruiser4Mega : MonoBehaviour
         {
             //otherBattleShip = other.GetComponent<BattleShipClass>();
             //if (otherBattleShip.CPUNumber != CPUNumber) otherBattleShip.reduceTheHPOfShip(HPReduce);
-            other.GetComponent<CPUBattleShip>().reduceTheHPOfShip(HPReduce);
+            other.GetComponent<CPUBattleShip>().reduceTheHPOfShip(HPReduce, null, null);
         }
     }
 

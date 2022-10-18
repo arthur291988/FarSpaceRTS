@@ -168,6 +168,9 @@ public class StationClass : MonoBehaviour
     public StationClass stationToConnect;
 
     public const float oneStepCloseStationsMaxDistance = 140f;
+
+    [HideInInspector]
+    public CPUFleetManager CPUfleetManager;
     private void Awake()
     {
         //groupWhereTheStationIs = new List<StationClass>();
@@ -179,6 +182,7 @@ public class StationClass : MonoBehaviour
         territoryLine = stationTransform.GetChild(1).GetComponent<SpriteRenderer>();
         energyGainEffect = GetComponent<ParticleSystem>();
         energyGainEffectMain = energyGainEffect.main;
+        CPUfleetManager = FindObjectOfType<CPUFleetManager>();
         //squardPositions = new List<Vector3>();
         //if (stationCurrentLevel>0) gunSphereParentTransform = gunSphereParent.transform;
         //fleetGatherRadius = 9f;//TO DELETE CAUSE IS ASSIGNED WHILE INSTANTIATING
@@ -535,12 +539,40 @@ public class StationClass : MonoBehaviour
         }
     }
 
+    private int collectTheCloseEnemyShipsOneTime()
+    {
+        int count = 0;
+        for (int i = 0; i < CommonProperties.playerBattleShips.Count; i++)
+        {
+            if ((CommonProperties.playerBattleShips[i].shipTransform.position - stationPosition).magnitude <= attackDistance)
+            {
+                count++;
+            }
+        }
+        for (int i = 0; i < CommonProperties.CPUBattleShipsDictionary.Count; i++)
+        {
+            if (i != (CPUNumber - 1))
+            {
+                for (int y = 0; y < CommonProperties.CPUBattleShipsDictionary[i].Count; y++)
+                {
+                    if ((CommonProperties.CPUBattleShipsDictionary[i][y].shipTransform.position - stationPosition).magnitude <= attackDistance)
+                    {
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
     public void increaseTheHPOfStation(float energyAmount)
     {
+        if (CPUNumber != 0 && collectTheCloseEnemyShipsOneTime() < 4 && CPUfleetManager.checkIfStationUnderDefence(CPUNumber,this)) CPUfleetManager.cancelCallForHelp(CPUNumber);
         lifeLineAmount += (energyAmount / 500)* (2-fillingSpeed);
         if (lifeLineAmount > 0)
         {
             lifeLineAmount = 0;
+            if (CPUNumber != 0 && collectTheCloseEnemyShipsOneTime() < 4 && CPUfleetManager.checkIfStationUnderDefence(CPUNumber, this)) CPUfleetManager.cancelCallForHelp(CPUNumber);
         }
         fillingLine.localPosition = new Vector3(lifeLineAmount, 0, 0);
     }
@@ -571,8 +603,8 @@ public class StationClass : MonoBehaviour
         return 0;
     }
 
-    //used only by CPU Station
-    public virtual void callForAHelp() { 
+    //used only by CPU Station and here it is because it is called from
+    public /*virtual*/ void callForAHelp() { 
     
     }
 
@@ -586,7 +618,7 @@ public class StationClass : MonoBehaviour
 
     public void reduceTheHPOfStation(float fillAmount)
     {
-        if (CPUNumber != 0 && lifeLineAmount == 0) callForAHelp(); 
+        if (CPUNumber != 0 && lifeLineAmount == 0) CPUfleetManager.callForHelp(CPUNumber, stationPosition, this); //callForAHelp(); 
         lifeLineAmount -= fillAmount * fillingSpeed;
         if (lifeLineAmount <= -6)
         {
