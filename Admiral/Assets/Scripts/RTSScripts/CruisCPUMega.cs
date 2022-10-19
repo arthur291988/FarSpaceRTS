@@ -51,8 +51,8 @@ public class CruisCPUMega : MonoBehaviour
             //otherBattleShip = other.GetComponent<BattleShipClass>();
             //if (otherBattleShip.CPUNumber != CPUNumber) otherBattleShip.reduceTheHPOfShip(HPReduce);
 
-            if (other.GetComponent<PlayerBattleShip>()) other.GetComponent<PlayerBattleShip>().reduceTheHPOfShip(HPReduce,null,null);
-            else if (other.GetComponent<CPUBattleShip>()) other.GetComponent<CPUBattleShip>().reduceTheHPOfShip(HPReduce, null, null);
+            if (other.GetComponent<PlayerBattleShip>()) other.GetComponent<PlayerBattleShip>().reduceTheHPOfShip(HPReduce);
+            else if (other.GetComponent<CPUBattleShip>()) other.GetComponent<CPUBattleShip>().reduceTheHPOfShip(HPReduce);
         }
     }
     private void FixedUpdate()

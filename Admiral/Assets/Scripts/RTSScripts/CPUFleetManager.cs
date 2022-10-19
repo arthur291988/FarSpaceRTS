@@ -24,8 +24,8 @@ public class CPUFleetManager : MonoBehaviour
 
     private const float radiusOfShipsRingAroundStation = 6;
     private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 13;
-    private const int FLEET_ATTACK_TIME = 90;
-    private const int FLEET_ATTACK_PREPARE_TIME = 10;
+    private const int FLEET_ATTACK_TIME = 120;
+    private const int FLEET_ATTACK_PREPARE_TIME = 15;
 
     private int innnerCircleMax;
     private float radiusGroup;
@@ -33,7 +33,7 @@ public class CPUFleetManager : MonoBehaviour
     private const byte freeState = 0;
     private const byte prepareState = 1;//this one passes comands to next attack station or star
     private const byte staionAttackState = 2;
-    private const byte starAttackState = 3;
+    //private const byte starAttackState = 3;
     private const byte defenceState = 4; //this one beats any other
 
     private List<CPUBattleShip> CPUBattleShipsPrepearedToAttack;
@@ -106,6 +106,8 @@ public class CPUFleetManager : MonoBehaviour
         {
             CPUFleetStates[CPUNumber] = defenceState;
             CPUStationUderDefence[CPUNumber] = station;
+            CPUIsPrepearingToAttack[CPUNumber] = false;
+            CPUBattleShipsPrepearedToAttack.Clear();
             for (int i = 0; i < CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count; i++)
             {
                 Vector3 newPos;
@@ -163,7 +165,7 @@ public class CPUFleetManager : MonoBehaviour
     public void attackTheStation(int CPUNumber, Vector3 gatheredPoint)
     {
         byte index = 0;
-        List<StationClass> stationsToAttack = null;
+        List<StationClass> stationsToAttack = new List<StationClass>();
         StationClass stationToAttack = null;
 
         for (int i = 0; i < CommonProperties.allStations.Count; i++)
@@ -325,34 +327,34 @@ public class CPUFleetManager : MonoBehaviour
         }
 
         //time before station attack state will be canceled
-        if (CPUFleetPrepareTimer[1] > 0 && CPUFleetStates[1]==staionAttackState)
+        if (CPUFleetAttackTimer[1] > 0 && CPUFleetStates[1]==staionAttackState)
         {
-            CPUFleetPrepareTimer[1] -= Time.deltaTime;
-            if (CPUFleetPrepareTimer[1] <= 0)
+            CPUFleetAttackTimer[1] -= Time.deltaTime;
+            if (CPUFleetAttackTimer[1] <= 0)
             {
                 CPUFleetStates[1] = freeState;
             }
         }
-        if (CPUFleetPrepareTimer[2] > 0 && CPUFleetStates[2] == staionAttackState)
+        if (CPUFleetAttackTimer[2] > 0 && CPUFleetStates[2] == staionAttackState)
         {
-            CPUFleetPrepareTimer[2] -= Time.deltaTime;
-            if (CPUFleetPrepareTimer[2] <= 0)
+            CPUFleetAttackTimer[2] -= Time.deltaTime;
+            if (CPUFleetAttackTimer[2] <= 0)
             {
                 CPUFleetStates[2] = freeState;
             }
         }
-        if (CPUFleetPrepareTimer[3] > 0 && CPUFleetStates[3] == staionAttackState)
+        if (CPUFleetAttackTimer[3] > 0 && CPUFleetStates[3] == staionAttackState)
         {
-            CPUFleetPrepareTimer[3] -= Time.deltaTime;
-            if (CPUFleetPrepareTimer[3] <= 0)
+            CPUFleetAttackTimer[3] -= Time.deltaTime;
+            if (CPUFleetAttackTimer[3] <= 0)
             {
                 CPUFleetStates[3] = freeState;
             }
         }
-        if (CPUFleetPrepareTimer[4] > 0 && CPUFleetStates[4] == staionAttackState)
+        if (CPUFleetAttackTimer[4] > 0 && CPUFleetStates[4] == staionAttackState)
         {
-            CPUFleetPrepareTimer[4] -= Time.deltaTime;
-            if (CPUFleetPrepareTimer[4] <= 0)
+            CPUFleetAttackTimer[4] -= Time.deltaTime;
+            if (CPUFleetAttackTimer[4] <= 0)
             {
                 CPUFleetStates[4] = freeState;
             }

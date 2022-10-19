@@ -1876,21 +1876,21 @@ public class StationCPU : StationClass
 
         if (shipToAttak != null)
         {
-            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm, null, this);
+            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm);
         }
 
         closeBattleShips.Clear();
 
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.2f);
         attackLaserLine.enabled = false;
     }
 
     private void FixedUpdate()
     {
-        if (attackLaserLine.enabled && shipToAttak != null)
-        {
-            attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
-        }
+        //if (attackLaserLine.enabled && shipToAttak != null)
+        //{
+        //    attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+        //}
         if (attackMode && shipToAttak != null && stationCurrentLevel > 0 && stationGunLevel == GunUpgradeCounts)
         {
             if (gunSphereParentTransform.rotation != Quaternion.LookRotation(shipToAttak.shipTransform.position - gunSphereParentTransform.position, Vector3.up))

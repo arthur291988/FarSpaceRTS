@@ -129,10 +129,10 @@ public class CameraManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (PanelIsClosed && camera.fieldOfView != 40f)
+        if (PanelIsClosed && camera.fieldOfView != 48f)
         {
-            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, 40f, 0.1f);
-            if (camera.fieldOfView > 35f) PanelIsClosed = false;
+            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, 48f, 0.2f);
+            if (camera.fieldOfView >= 47f) PanelIsClosed = false;
         }
 
         //if (!afterStartIsMoved && !Lists.isContinued && Lists.AllSceneObjects.Count == 0)
@@ -211,7 +211,7 @@ public class CameraManager : MonoBehaviour
                         //else
                         //{
                         camera.fieldOfView += deltaDistance * 0.1f;
-                        camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 10, 47);
+                        camera.fieldOfView = Mathf.Clamp(camera.fieldOfView, 10, 48);
                         //}
                     }
                     //else

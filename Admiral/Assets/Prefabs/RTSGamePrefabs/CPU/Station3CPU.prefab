@@ -31935,15 +31935,14 @@ MonoBehaviour:
   ObjectPulled: {fileID: 0}
   ObjectPulledList: []
   energyOfStation: 0
+  energyLimitOfStation: 0
   energyInscreaseTime: 0
   energyInscreaseTimer: 0
   energyPullFromEnergonRate: 0
   HPInscreaseTimer: 0
-  stationShotTimer: 0
-  stationShotTime: 0
   ShipsLimit: 0
   ShipsAssigned: 0
-  energyRequiredToShot: 0
+  energyToGetFromLine: 0
   stationCurrentLevel: 0
   upgradeCounts: 0
   energyToNextUpgradeOfStation: 0
@@ -31951,6 +31950,7 @@ MonoBehaviour:
   GunUpgradeCounts: 0
   energyToNextUpgradeOfGun: 0
   energyToConnection: 0
+  energyLoseIfDestroyed: 0
   energyOfStationToUPGradeGun: 0
   energyOfStationToUPGradeStation: 0
   energyOfStationToSetConnection: 0
@@ -31976,6 +31976,7 @@ MonoBehaviour:
   attackTimeMin: 0
   harm: 0
   attackLaserLine: {fileID: 0}
+  energyPullLine: {fileID: 0}
   attackTimerTime: 0
   shieldTimerTime: 0
   shipsToGiveOrderCommandOfStation: []
@@ -31988,6 +31989,7 @@ MonoBehaviour:
   ConnectedStations: []
   colorOfStationMat: {r: 0, g: 0, b: 0, a: 0}
   stationToConnect: {fileID: 0}
+  CPUfleetManager: {fileID: 0}
   stationColorSphere:
   - {fileID: 1142850456597910611}
   gunClass: {fileID: 4559589584774559762}
@@ -32010,7 +32012,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 112dccdc2f1e5ae48903de58a733c2db, type: 2}
+  - {fileID: 2100000, guid: a53a8bf7fecd22e40a93d754e6c56bde, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

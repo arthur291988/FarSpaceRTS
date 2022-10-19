@@ -423,7 +423,7 @@ public class CPUBattleShip : BattleShipClass
                 //    tempShip.reduceTheHPOfShip(harm);
 
                 //}
-                if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm,this,null);
+                if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm);
             }
         }
         //else if (gunToAttak != null) {
@@ -444,7 +444,7 @@ public class CPUBattleShip : BattleShipClass
         closeStars.Clear();
 
         shotSound.Play();
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.2f);
         attackLaserLine.enabled = false;
     }
 
@@ -575,18 +575,12 @@ public class CPUBattleShip : BattleShipClass
         shieldIsOn = false;
     }
 
-    public override void reduceTheHPOfShip(float harmAmount, BattleShipClass battleShipDestroyedThis, StationClass stationDestroyedThis)
+    public override void reduceTheHPOfShip(float harmAmount)
     {
         HP -= harmAmount;
         if (HP <= 4) preBurstEffect();
         if (HP <= 0)
         {
-            if (battleShipDestroyedThis != null)
-            {
-                battleShipDestroyedThis.attackLaserLine.enabled = false;
-                if (battleShipDestroyedThis.isParalyzer) battleShipDestroyedThis.paralizerLaserLine.enabled = false;
-            }
-            else if (stationDestroyedThis != null) stationDestroyedThis.attackLaserLine.enabled = false;
             disactivateThisShip();
         }
     }
@@ -786,15 +780,15 @@ public class CPUBattleShip : BattleShipClass
                 isMoving = false;
             }
         }
-        if (attackLaserLine.enabled && shipToAttak != null && shipToAttak.HP > 0)
-        {
-            attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
-            if (shipToAttak.HP <= 0) attackLaserLine.enabled = false;
-        }
-        if (isParalyzer && paralizerLaserLine.enabled && shipToAttak != null && shipToAttak.HP > 0)
-        {
-            paralizerLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
-            if (shipToAttak.HP <= 0) paralizerLaserLine.enabled = false;
-        }
+        //if (attackLaserLine.enabled && shipToAttak != null && shipToAttak.HP > 0)
+        //{
+        //    attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+        //    if (shipToAttak.HP <= 0) attackLaserLine.enabled = false;
+        //}
+        //if (isParalyzer && paralizerLaserLine.enabled && shipToAttak != null && shipToAttak.HP > 0)
+        //{
+        //    paralizerLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+        //    if (shipToAttak.HP <= 0) paralizerLaserLine.enabled = false;
+        //}
     }
 }

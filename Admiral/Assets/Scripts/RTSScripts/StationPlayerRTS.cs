@@ -227,13 +227,13 @@ public class StationPlayerRTS : StationClass
 
         if (shipToAttak != null)
         {
-            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm,null,this);
+            if (!shipToAttak.shieldIsOn) shipToAttak.reduceTheHPOfShip(harm);
         }
         
 
         closeCPUBattleShips.Clear();
 
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.2f);
         attackLaserLine.enabled = false;
     }
 
@@ -620,11 +620,11 @@ public class StationPlayerRTS : StationClass
                 if (CommonProperties.MainCameraOfRTS.fieldOfView != 10f) CommonProperties.MainCameraOfRTS.fieldOfView = Mathf.Lerp(CommonProperties.MainCameraOfRTS.fieldOfView, 10f, 0.1f);
             //}
         }
-        if (attackLaserLine.enabled && shipToAttak != null)
-        {
-            attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
+        //if (attackLaserLine.enabled && shipToAttak != null)
+        //{
+        //    attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);
 
-        }
+        //}
         if (attackMode && shipToAttak != null && stationCurrentLevel>0 && stationGunLevel==GunUpgradeCounts) {
             if (gunSphereParentTransform.rotation!=Quaternion.LookRotation(shipToAttak.shipTransform.position- gunSphereParentTransform.position, Vector3.up)) 
                 gunSphereParentTransform.rotation=Quaternion.Lerp(gunSphereParentTransform.rotation, Quaternion.LookRotation(shipToAttak.shipTransform.position - gunSphereParentTransform.position, Vector3.up), 0.1f);
