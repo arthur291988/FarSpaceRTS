@@ -136,6 +136,8 @@ public class CPUFleetManager : MonoBehaviour
         else return null;
     }
 
+    public int getTheFleetState(int CPUNumber) { return CPUFleetStates[CPUNumber]; }
+
     public void preapareForAttack(int CPUNumber, Vector3 stationPosition)
     {
         if (CPUFleetStates[CPUNumber] == freeState)

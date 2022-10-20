@@ -365,10 +365,19 @@ public class CPUBattleShip : BattleShipClass
         }
         else
         {
+            
             if (closeBattleShips.Count > 0)
             {
-                shipToAttak = closeBattleShips.Count < 2 ? closeBattleShips[0] : closeBattleShips[Random.Range(0, closeBattleShips.Count)];
-                if (shipToAttak.isActiveAndEnabled)
+                for (int i = 0; i < closeBattleShips.Count; i++)
+                {
+                    if ((closeBattleShips[i].shipTransform.position - shipTransform.position).magnitude <= attackDistance)
+                    {
+                        shipToAttak = closeBattleShips[i];
+                        break;
+                    }
+                }
+                //shipToAttak = closeBattleShips.Count < 2 ? closeBattleShips[0] : closeBattleShips[Random.Range(0, closeBattleShips.Count)];
+                if (shipToAttak!=null && shipToAttak.isActiveAndEnabled)
                 {
                     attackLaserLine.SetPosition(0, shipTransform.position);
                     attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);

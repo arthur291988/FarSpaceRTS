@@ -43,6 +43,8 @@ public class StationCPU : StationClass
 
     private List<Vector3> squardPositions;
 
+    private List<CPUBattleShip> producedShips;
+
     [SerializeField]
     private CPUGun gunClass;
 
@@ -112,6 +114,7 @@ public class StationCPU : StationClass
         wayDots = new List<Vector3>();
         if (stationCurrentLevel > 0) gunSphereParentTransform = gunSphereParent.transform;
         squardPositions = new List<Vector3>();
+        producedShips = new List<CPUBattleShip>();
         shipsToGiveOrderCommandOfStation = new List<CPUBattleShip>();
         //shipsOfStationThatNear = new List<CPUBattleShip>();
         innnerCircleMax = 8; //the first circle around the ship that is on center of squard
@@ -467,7 +470,7 @@ public class StationCPU : StationClass
                 if (energyOfStation > CommonProperties.D4ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergy(true);
                 else
                 {
-                    allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                    allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                     giveAnOrderToFleet();
                 }
             }
@@ -506,7 +509,7 @@ public class StationCPU : StationClass
                 if (energyOfStation > CommonProperties.D3ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergy(true);
                 else
                 {
-                    allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                    allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                     giveAnOrderToFleet();
                 }
             }
@@ -564,7 +567,7 @@ public class StationCPU : StationClass
                 if (energyOfStation > CommonProperties.D2ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergy(true);
                 else
                 {
-                    allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                    allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                     giveAnOrderToFleet();
                 }
             }
@@ -621,7 +624,7 @@ public class StationCPU : StationClass
                 if (energyOfStation > CommonProperties.D1ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergy(true);
                 else
                 {
-                    allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                    allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                     giveAnOrderToFleet();
                 }
             }
@@ -686,7 +689,7 @@ public class StationCPU : StationClass
                         if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
                         else
                         {
-                            allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                         }
                     }
                     else if (stationCurrentLevel == 1)
@@ -722,7 +725,7 @@ public class StationCPU : StationClass
                         if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
                         else
                         {
-                            allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                         }
                     }
                     else if (stationCurrentLevel == 2)
@@ -776,7 +779,7 @@ public class StationCPU : StationClass
                         if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D2ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
                         else
                         {
-                            allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                         }
                     }
 
@@ -831,7 +834,7 @@ public class StationCPU : StationClass
                         if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D1ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
                         else
                         {
-                            allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                         }
                     }
                 }
@@ -880,7 +883,7 @@ public class StationCPU : StationClass
                         if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergyOfCPUGroup(2);
                         else
                         {
-                            allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                             giveAnOrderToFleet();
                         }
                     }
@@ -917,7 +920,7 @@ public class StationCPU : StationClass
                         if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergyOfCPUGroup(2);
                         else
                         {
-                            allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                             giveAnOrderToFleet();
                         }
                     }
@@ -972,7 +975,7 @@ public class StationCPU : StationClass
                         if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D2ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergyOfCPUGroup(2);
                         else
                         {
-                            allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                             giveAnOrderToFleet();
                         }
                     }
@@ -1028,7 +1031,7 @@ public class StationCPU : StationClass
                         if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D1ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergyOfCPUGroup(2);
                         else
                         {
-                            allignTheShipsAroundStation(); //put ships around station after the last energy unit is utilized
+                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
                             giveAnOrderToFleet();
                         }
                     }
@@ -1262,6 +1265,7 @@ public class StationCPU : StationClass
         CommonProperties.CPUBattleShips.Add(cpuShipObject);
         ObjectPulled.transform.position = stationPosition;
         ObjectPulled.SetActive(true);
+        producedShips.Add(cpuShipObject);
 
     }
 
@@ -1406,7 +1410,7 @@ public class StationCPU : StationClass
         {
             //attack star only if it is one step close to station 
             StarController closestStar = getTheStarClosestToStation();
-            if (closestStar != null)
+            if (closestStar != null && CPUfleetManager.getTheFleetState(CPUNumber) == 0)
             {
                 getherTheReferenceToFleetOfStationExceptDefenceMinimum();
                 if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, closestStar.starPosition);
@@ -1620,30 +1624,53 @@ public class StationCPU : StationClass
     //    sendTheFleetToThePoint(stationPosition, stationToAttack.stationPosition);
     //}
 
-    private void allignTheShipsAroundStation()
+    private void allignTheShipsAroundStation(List<CPUBattleShip> producedShipsToPass)
     {
-        gatherTheReferencesToNearShips();
-        if (shipsToGiveOrderCommandOfStation.Count > 1)
+        //gatherTheReferencesToNearShips();
+        //if (shipsToGiveOrderCommandOfStation.Count > 1)
+        //{
+        //    for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+        //    {
+        //        Vector3 newPos;
+        //        float step = (Mathf.PI * 2) / shipsToGiveOrderCommandOfStation.Count; // отступ
+        //        newPos.x = stationPosition.x + Mathf.Sin(step * i) * radiusOfShipsRingAroundStation; // по оси X
+        //        newPos.z = stationPosition.z + Mathf.Cos(step * i) * radiusOfShipsRingAroundStation; // по оси Z
+        //        newPos.y = 0; // по оси Y всегда 0
+        //        squardPositions.Add(newPos);
+        //    }
+        //    for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+        //    {
+        //        shipsToGiveOrderCommandOfStation[i].giveAShipMoveOrder(squardPositions[i], null);
+        //    }
+        //}
+        //else if (shipsToGiveOrderCommandOfStation.Count == 1)
+        //{
+        //    shipsToGiveOrderCommandOfStation[0].giveAShipMoveOrder(new Vector3 (stationPosition.x+6, 0 , stationPosition.z + 6), null);
+        //}
+        //shipsToGiveOrderCommandOfStation.Clear();
+        //squardPositions.Clear();
+
+        if (producedShipsToPass.Count > 1)
         {
-            for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+            for (int i = 0; i < producedShipsToPass.Count; i++)
             {
                 Vector3 newPos;
-                float step = (Mathf.PI * 2) / shipsToGiveOrderCommandOfStation.Count; // отступ
+                float step = (Mathf.PI * 2) / producedShipsToPass.Count; // отступ
                 newPos.x = stationPosition.x + Mathf.Sin(step * i) * radiusOfShipsRingAroundStation; // по оси X
                 newPos.z = stationPosition.z + Mathf.Cos(step * i) * radiusOfShipsRingAroundStation; // по оси Z
                 newPos.y = 0; // по оси Y всегда 0
                 squardPositions.Add(newPos);
             }
-            for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+            for (int i = 0; i < producedShipsToPass.Count; i++)
             {
-                shipsToGiveOrderCommandOfStation[i].giveAShipMoveOrder(squardPositions[i], null);
+                producedShipsToPass[i].giveAShipMoveOrder(squardPositions[i], null);
             }
         }
-        else if (shipsToGiveOrderCommandOfStation.Count == 1)
+        else if (producedShipsToPass.Count == 1)
         {
-            shipsToGiveOrderCommandOfStation[0].giveAShipMoveOrder(new Vector3 (stationPosition.x+6, 0 , stationPosition.z + 6), null);
+            producedShipsToPass[0].giveAShipMoveOrder(new Vector3(stationPosition.x + 6, 0, stationPosition.z + 6), null);
         }
-        shipsToGiveOrderCommandOfStation.Clear();
+        producedShips.Clear();
         squardPositions.Clear();
     }
 
@@ -1863,8 +1890,16 @@ public class StationCPU : StationClass
         {
             if (closeBattleShips.Count > 0)
             {
-                shipToAttak = closeBattleShips.Count < 2 ? closeBattleShips[0] : closeBattleShips[Random.Range(0, closeBattleShips.Count)];
-                if (shipToAttak.isActiveAndEnabled)
+                for (int i = 0; i < closeBattleShips.Count; i++)
+                {
+                    if ((closeBattleShips[i].shipTransform.position - stationPosition).magnitude <= attackDistance)
+                    {
+                        shipToAttak = closeBattleShips[i];
+                        break;
+                    }
+                }
+                //shipToAttak = closeBattleShips.Count < 2 ? closeBattleShips[0] : closeBattleShips[Random.Range(0, closeBattleShips.Count)];
+                if (shipToAttak != null && shipToAttak.isActiveAndEnabled)
                 {
                     attackLaserLine.SetPosition(0, stationPosition);
                     attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);

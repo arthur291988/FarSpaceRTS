@@ -213,8 +213,16 @@ public class StationPlayerRTS : StationClass
         {
             if (closeCPUBattleShips.Count > 0)
             {
-                shipToAttak = closeCPUBattleShips.Count < 2 ? closeCPUBattleShips[0] : closeCPUBattleShips[Random.Range(0, closeCPUBattleShips.Count)];
-                if (shipToAttak.isActiveAndEnabled)
+                for (int i = 0; i < closeCPUBattleShips.Count; i++)
+                {
+                    if ((closeCPUBattleShips[i].shipTransform.position - stationPosition).magnitude <= attackDistance)
+                    {
+                        shipToAttak = closeCPUBattleShips[i];
+                        break;
+                    }
+                }
+                //shipToAttak = closeCPUBattleShips.Count < 2 ? closeCPUBattleShips[0] : closeCPUBattleShips[Random.Range(0, closeCPUBattleShips.Count)];
+                if (shipToAttak!=null && shipToAttak.isActiveAndEnabled)
                 {
                     attackLaserLine.SetPosition(0, stationPosition);
                     attackLaserLine.SetPosition(1, shipToAttak.shipTransform.position);

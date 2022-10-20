@@ -618,8 +618,9 @@ public class StationClass : MonoBehaviour
 
     public void reduceTheHPOfStation(float fillAmount)
     {
-        if (CPUNumber != 0 && lifeLineAmount == 0) CPUfleetManager.callForHelp(CPUNumber, stationPosition, this); //callForAHelp(); 
         lifeLineAmount -= fillAmount * fillingSpeed;
+        if (CPUNumber != 0 && !CPUfleetManager.checkIfStationUnderDefence(CPUNumber,this)) 
+            CPUfleetManager.callForHelp(CPUNumber, stationPosition, this); //callForAHelp(); 
         if (lifeLineAmount <= -6)
         {
             lifeLineAmount = -6;
