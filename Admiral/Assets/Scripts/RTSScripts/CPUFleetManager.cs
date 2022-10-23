@@ -130,7 +130,7 @@ public class CPUFleetManager : MonoBehaviour
         else return false;
     }
 
-    public StationClass getTheStationUNderDefence(int CPUNumber)
+    public StationClass getTheStationUnderDefence(int CPUNumber)
     {
         if (CPUFleetStates[CPUNumber] == defenceState) return CPUStationUderDefence[CPUNumber];
         else return null;

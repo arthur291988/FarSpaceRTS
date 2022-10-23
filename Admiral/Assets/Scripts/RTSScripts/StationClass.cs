@@ -241,7 +241,7 @@ public class StationClass : MonoBehaviour
                 if (CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1][i].maternalStation == this) CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1][i].maternalStation = newStation;
         }
 
-        //bull means destroying the station 
+        //null means destroying the station 
         if (newStation == null)
         {
             ObjectPulledList = ObjectPullerRTS.current.GetStationBurstPull();
@@ -613,7 +613,7 @@ public class StationClass : MonoBehaviour
     //}
 
     //Used by CPU statuin only
-    public virtual void sendTheFleetToThePoint(Vector3 startPoint, Vector3 destinationPoint) { 
+    public virtual void sendTheFleetToThePoint(Vector3 startPoint, Vector3 destinationPoint, List<CPUBattleShip> ships) { 
     }
 
     public void reduceTheHPOfStation(float fillAmount)

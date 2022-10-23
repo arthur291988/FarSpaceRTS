@@ -67,6 +67,7 @@ public class CPUBattleShip : BattleShipClass
         closeStars = new List<StarController>();
         if (attackLaserLine == null) attackLaserLine = GetComponent<LineRenderer>();
         attackLaserLine.positionCount = 2;
+        attackLaserLine.enabled = false;
         powerShiled.SetActive(false);
         if (name.Contains("Cruis")) isCruiser = true;
         else isCruiser = false;

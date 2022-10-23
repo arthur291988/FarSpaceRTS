@@ -121,6 +121,7 @@ public class StationCPU : StationClass
         radiusGroup = 3;
         //to prevent a bug of spawning additional pulled object (automatic will grow station that copy of pulled object with 0 index which can be already active and with active gun) with active gun 
         if (gunSphereVisible != null && gunSphereVisible.activeInHierarchy) gunSphereVisible.SetActive(false);
+
     }
     private void OnDisable()
     {
@@ -1399,21 +1400,15 @@ public class StationCPU : StationClass
         //    if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, getTheStarClosestToStation().starPosition);
         //}
 
-        //priority task is to defence of station under attack
-        StationClass stationUnderDefence = CPUfleetManager.getTheStationUNderDefence(CPUNumber);
-        if (stationUnderDefence != null)
-        {
-            getherTheReferenceToFleetOfStationExceptDefenceMinimum();
-            if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, stationUnderDefence.stationPosition);
-        }
-        else
+        
+        if (CPUfleetManager.getTheFleetState(CPUNumber) == 0)
         {
             //attack star only if it is one step close to station 
             StarController closestStar = getTheStarClosestToStation();
-            if (closestStar != null && CPUfleetManager.getTheFleetState(CPUNumber) == 0)
+            if (closestStar != null)
             {
                 getherTheReferenceToFleetOfStationExceptDefenceMinimum();
-                if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, closestStar.starPosition);
+                if (shipsToGiveOrderCommandOfStation.Count > 0) sendTheFleetToThePoint(stationPosition, closestStar.starPosition, shipsToGiveOrderCommandOfStation);
             }
             else
             {
@@ -1573,6 +1568,7 @@ public class StationCPU : StationClass
         #endregion
     }
 
+
     //public int fleetOfStationMoreThanDefenceMinimum() {
     //    int readyToAttackFleet =0;
     //    //gatherTheReferencesToShipsOfStationThatNear();
@@ -1670,93 +1666,104 @@ public class StationCPU : StationClass
         {
             producedShipsToPass[0].giveAShipMoveOrder(new Vector3(stationPosition.x + 6, 0, stationPosition.z + 6), null);
         }
+
+        //if there is station under attack, the fleet is send to defence of station under attack
+        StationClass stationUnderDefence = CPUfleetManager.getTheStationUnderDefence(CPUNumber);
+        if (stationUnderDefence != null)
+        {
+            if (producedShipsToPass.Count > 1) sendTheFleetToThePoint(stationPosition, stationUnderDefence.stationPosition, producedShips);
+        }
         producedShips.Clear();
         squardPositions.Clear();
     }
 
-    public override void sendTheFleetToThePoint(Vector3 startPoint, Vector3 destinationPoint) {
+    public override void sendTheFleetToThePoint(Vector3 startPoint, Vector3 destinationPoint, List <CPUBattleShip> ships) {
         //that means that fleet will not placed in center of enemy station or star or ally station, it will stay just 7 steps before
         Vector3 moveToPoint = destinationPoint + (startPoint - destinationPoint).normalized * 7; 
         float stepForOuterRadius = 1;
 
-        if (shipsToGiveOrderCommandOfStation.Count > 1)
+        if (ships != null)
         {
-            for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+            if (ships.Count > 1)
             {
-                if (i == 0)
+                for (int i = 0; i < ships.Count; i++)
                 {
-                    squardPositions.Add(moveToPoint);
-                }
-                else if (i <= innnerCircleMax)
-                {
-                    if (radiusGroup != 3) radiusGroup = 3;
-                    Vector3 newPos;
-                    float step = (Mathf.PI * 2) / innnerCircleMax; // отступ
-                    newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
-                    newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
-                    newPos.y = 0; // по оси Y всегда 0
-                    squardPositions.Add(newPos);
-                    if (i == innnerCircleMax)
+                    if (i == 0)
                     {
-                        if ((shipsToGiveOrderCommandOfStation.Count - squardPositions.Count) > innnerCircleMax * 2) stepForOuterRadius = innnerCircleMax * 2;
-                        else stepForOuterRadius = shipsToGiveOrderCommandOfStation.Count - squardPositions.Count;
+                        squardPositions.Add(moveToPoint);
+                    }
+                    else if (i <= innnerCircleMax)
+                    {
+                        if (radiusGroup != 3) radiusGroup = 3;
+                        Vector3 newPos;
+                        float step = (Mathf.PI * 2) / innnerCircleMax; // отступ
+                        newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
+                        newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
+                        newPos.y = 0; // по оси Y всегда 0
+                        squardPositions.Add(newPos);
+                        if (i == innnerCircleMax)
+                        {
+                            if ((ships.Count - squardPositions.Count) > innnerCircleMax * 2) stepForOuterRadius = innnerCircleMax * 2;
+                            else stepForOuterRadius = ships.Count - squardPositions.Count;
+                        }
+                    }
+                    else if (i <= (innnerCircleMax * 3))
+                    {
+                        if (radiusGroup != 6) radiusGroup = 6;
+                        Vector3 newPos;
+                        float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
+                        newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
+                        newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
+                        newPos.y = 0; // по оси Y всегда 0
+                        squardPositions.Add(newPos);
+                        if (i == (innnerCircleMax * 3))
+                        {
+                            if ((ships.Count - squardPositions.Count) > innnerCircleMax * 3) stepForOuterRadius = innnerCircleMax * 3;
+                            else stepForOuterRadius = ships.Count - squardPositions.Count;
+                        }
+                    }
+                    else if (i <= (innnerCircleMax * 7))
+                    {
+                        if (radiusGroup != 9) radiusGroup = 9;
+                        Vector3 newPos;
+                        float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
+                        newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
+                        newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
+                        newPos.y = 0; // по оси Y всегда 0
+                        squardPositions.Add(newPos);
+                        if (i == (innnerCircleMax * 7))
+                        {
+                            if ((ships.Count - squardPositions.Count) > innnerCircleMax * 4) stepForOuterRadius = innnerCircleMax * 4;
+                            else stepForOuterRadius = ships.Count - squardPositions.Count;
+                        }
+                    }
+                    else if (i <= (innnerCircleMax * 15))
+                    {
+                        if (radiusGroup != 12) radiusGroup = 12;
+                        Vector3 newPos;
+                        float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
+                        newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
+                        newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
+                        newPos.y = 0; // по оси Y всегда 0
+                        squardPositions.Add(newPos);
                     }
                 }
-                else if (i <= (innnerCircleMax * 3))
-                {
-                    if (radiusGroup != 6) radiusGroup = 6;
-                    Vector3 newPos;
-                    float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
-                    newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
-                    newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
-                    newPos.y = 0; // по оси Y всегда 0
-                    squardPositions.Add(newPos);
-                    if (i == (innnerCircleMax * 3))
-                    {
-                        if ((shipsToGiveOrderCommandOfStation.Count - squardPositions.Count) > innnerCircleMax * 3) stepForOuterRadius = innnerCircleMax * 3;
-                        else stepForOuterRadius = shipsToGiveOrderCommandOfStation.Count - squardPositions.Count;
-                    }
-                }
-                else if (i <= (innnerCircleMax * 7))
-                {
-                    if (radiusGroup != 9) radiusGroup = 9;
-                    Vector3 newPos;
-                    float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
-                    newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
-                    newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
-                    newPos.y = 0; // по оси Y всегда 0
-                    squardPositions.Add(newPos);
-                    if (i == (innnerCircleMax * 7))
-                    {
-                        if ((shipsToGiveOrderCommandOfStation.Count - squardPositions.Count) > innnerCircleMax * 4) stepForOuterRadius = innnerCircleMax * 4;
-                        else stepForOuterRadius = shipsToGiveOrderCommandOfStation.Count - squardPositions.Count;
-                    }
-                }
-                else if (i <= (innnerCircleMax * 15))
-                {
-                    if (radiusGroup != 12) radiusGroup = 12;
-                    Vector3 newPos;
-                    float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
-                    newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
-                    newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
-                    newPos.y = 0; // по оси Y всегда 0
-                    squardPositions.Add(newPos);
-                }
-            }
 
-            if ((startPoint - destinationPoint).magnitude < oneStepCloseStationsMaxDistance)
-            {
-                for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+                if ((startPoint - destinationPoint).magnitude < oneStepCloseStationsMaxDistance)
                 {
-                    shipsToGiveOrderCommandOfStation[i].giveAShipMoveOrder(squardPositions[i], null);
+                    for (int i = 0; i < ships.Count; i++)
+                    {
+                        ships[i].giveAShipMoveOrder(squardPositions[i], null);
+                    }
                 }
-            }
-            else {
-                wayDots.Clear();
-                determineBestWayToMovePoint(startPoint, destinationPoint);
-                for (int i = 0; i < shipsToGiveOrderCommandOfStation.Count; i++)
+                else
                 {
-                    shipsToGiveOrderCommandOfStation[i].giveAShipMoveOrder(squardPositions[i], wayDots);
+                    wayDots.Clear();
+                    determineBestWayToMovePoint(startPoint, destinationPoint);
+                    for (int i = 0; i < ships.Count; i++)
+                    {
+                        ships[i].giveAShipMoveOrder(squardPositions[i], wayDots);
+                    }
                 }
             }
         }

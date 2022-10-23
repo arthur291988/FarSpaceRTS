@@ -134,6 +134,8 @@ public class StarController : MonoBehaviour
             CommonProperties.CPUStationsDictionary[station.CPUNumber - 1].Add(station);
             stationCPU.colorOfStationMat = GameController.getProperMatColorByIndex(GameController.colorsOfPlayers[CPUNumber-1]); //setting the next color available on colours list to this CPU station
             stationCPU.setProperStationColor();
+
+           
         }
         else
         {
@@ -184,9 +186,10 @@ public class StarController : MonoBehaviour
         station.stationTransform = ObjectPulled.transform;
         station.stationPosition = station.stationTransform.position;
 
-        ObjectPulled.SetActive(true);
-
         CommonProperties.stars.Remove(this);
+        ObjectPulled.SetActive(true);
+        //send closest ships to attack new star
+        if (station.CPUNumber != 0) stationCPU.giveAnOrderToFleet();
         gameObject.SetActive(false);
     }
 
