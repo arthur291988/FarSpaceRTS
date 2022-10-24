@@ -193,20 +193,25 @@ public class CommonProperties : MonoBehaviour
     public static int Station2EnergyFromLine = 350; 
     public static int Station3EnergyFromLine = 400;
 
-    public static int Station0GroupEnergyLoseIfDestroyed = 500;
-    public static int Station1GroupEnergyLoseIfDestroyed = 900;
-    public static int Station2GroupEnergyLoseIfDestroyed = 1300;
-    public static int Station3GroupEnergyLoseIfDestroyed = 1700;
+    //public static int Station0GroupEnergyLoseIfDestroyed = 500;
+    //public static int Station1GroupEnergyLoseIfDestroyed = 900;
+    //public static int Station2GroupEnergyLoseIfDestroyed = 1300;
+    //public static int Station3GroupEnergyLoseIfDestroyed = 1700;
 
     public static int Station0EnergyToConnection = 1000;//100;
     public static int Station1EnergyToConnection = 1500;//150;
     public static int Station2EnergyToConnection = 2000;//200;
     public static int Station3EnergyToConnection = 2500;//250;
 
-    public static float Station0EnergyProduceTime = 7;
-    public static float Station1EnergyProduceTime = 6;
-    public static float Station2EnergyProduceTime = 5;
-    public static float Station3EnergyProduceTime = 4;
+    public static float Station0EnergyProduceTime = 1;//7;
+    public static float Station1EnergyProduceTime = 1;//6;
+    public static float Station2EnergyProduceTime = 1;//5;
+    public static float Station3EnergyProduceTime = 1;//4;
+
+    public static int Station0EnergyProduceAmount = 7;//7;
+    public static int Station1EnergyProduceAmount = 11;//11;
+    public static int Station2EnergyProduceAmount = 16;//16;
+    public static int Station3EnergyProduceAmount = 25;//25;
 
     public static float Station0EnergyPullRate = 1f;
     public static float Station1EnergyPullRate = 2f;

@@ -177,6 +177,7 @@ public class PlayerBattleShip : BattleShipClass
         gameObject.layer = CPUNumber + 10;
         powerShiled.layer = CPUNumber + 10; 
 
+
     }
     public void setShipsColor(Color color)
     {

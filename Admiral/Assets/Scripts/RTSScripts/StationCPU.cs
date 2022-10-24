@@ -181,6 +181,13 @@ public class StationCPU : StationClass
     //    else shotIsMade = false;
     //}
 
+    public override void produceTheEnergy()
+    {
+        base.produceTheEnergy();
+        if (groupWhereTheStationIs != null) ConnectionCPUStations.distributeGroupEnergy(groupWhereTheStationIs);
+        else utilaizeTheEnergy(false);
+    }
+
     public override void pullTheEnergyFromEnergons()
     {
         if (closestEnegon != null)
@@ -1058,9 +1065,10 @@ public class StationCPU : StationClass
             station.energyToNextUpgradeOfGun = CommonProperties.gun0to1Upgrd;
             station.fillingSpeed = CommonProperties.star1FillingReducer;
             station.energyToConnection = CommonProperties.Station1EnergyToConnection;
-            station.energyLoseIfDestroyed = CommonProperties.Station1GroupEnergyLoseIfDestroyed;
+            //station.energyLoseIfDestroyed = CommonProperties.Station1GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station1EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station1EnergyProduceTime;
+            station.energyProdeucePerTime = CommonProperties.Station1EnergyProduceAmount;
             //station.stationShotTime = CommonProperties.Station1ShotTime;
             station.energonCatchDistance = CommonProperties.Station1EnergonCatchDistance;
             station.energyLimitOfStation = CommonProperties.Station1EnergyLimit;
@@ -1077,9 +1085,10 @@ public class StationCPU : StationClass
             station.energyToNextUpgradeOfGun = CommonProperties.gun1to2Upgrd;
             station.fillingSpeed = CommonProperties.star2FillingReducer;
             station.energyToConnection = CommonProperties.Station2EnergyToConnection;
-            station.energyLoseIfDestroyed = CommonProperties.Station2GroupEnergyLoseIfDestroyed;
+            //station.energyLoseIfDestroyed = CommonProperties.Station2GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station2EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station2EnergyProduceTime;
+            station.energyProdeucePerTime = CommonProperties.Station2EnergyProduceAmount;
             //station.stationShotTime = CommonProperties.Station2ShotTime;
             station.energonCatchDistance = CommonProperties.Station2EnergonCatchDistance;
             station.energyLimitOfStation = CommonProperties.Station2EnergyLimit;
@@ -1096,9 +1105,10 @@ public class StationCPU : StationClass
             station.energyToNextUpgradeOfGun = CommonProperties.gun2to3Upgrd;
             station.fillingSpeed = CommonProperties.star3FillingReducer;
             station.energyToConnection = CommonProperties.Station3EnergyToConnection;
-            station.energyLoseIfDestroyed = CommonProperties.Station3GroupEnergyLoseIfDestroyed;
+            //station.energyLoseIfDestroyed = CommonProperties.Station3GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station3EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station3EnergyProduceTime;
+            station.energyProdeucePerTime = CommonProperties.Station3EnergyProduceAmount;
             //station.stationShotTime = CommonProperties.Station3ShotTime;
             station.energonCatchDistance = CommonProperties.Station3EnergonCatchDistance;
             station.energyLimitOfStation = CommonProperties.Station3EnergyLimit;
@@ -1443,7 +1453,7 @@ public class StationCPU : StationClass
                 //}
 
                 #endregion
-                CPUfleetManager.preapareForAttack(CPUNumber, stationPosition);
+                CPUfleetManager.preapareForAttack(CPUNumber);
             }
         }
 
@@ -1979,12 +1989,12 @@ public class StationCPU : StationClass
         //}
 
         //timer to increment the energy naturally
-        if (energyInscreaseTimer > 0 && groupWhereTheStationIs==null)
+        if (energyInscreaseTimer > 0 /*&& groupWhereTheStationIs==null*/)
         {
             energyInscreaseTimer -= Time.deltaTime;
             if (energyInscreaseTimer < 0)
             {
-                energyOfStation++;
+                produceTheEnergy();
                 energyInscreaseTimer = energyInscreaseTime;
             }
         }

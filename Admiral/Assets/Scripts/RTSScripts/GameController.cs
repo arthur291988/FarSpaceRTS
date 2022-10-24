@@ -62,7 +62,7 @@ public class GameController : MonoBehaviour
 
         setTheLevel();
 
-        for (byte i = 0; i < CommonProperties.enemyCount + 1; i++)
+        for (byte i = 0; i < 1; i++)
         {
             StartCoroutine(launchTheEnergon());
         }
@@ -192,11 +192,12 @@ public class GameController : MonoBehaviour
         station.fillingSpeed = CommonProperties.star0FillingReducer; ;
         station.ShipsAssigned = 0;
         station.energyToConnection = CommonProperties.Station0EnergyToConnection;
-        station.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
+        //station.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
         station.energyToGetFromLine = CommonProperties.Station0EnergyFromLine;
         //station.energyRequiredToShot = CommonProperties.Station0EnergytoShot;
         station.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
         station.energyInscreaseTimer = station.energyInscreaseTime;
+        station.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
         station.energyPullFromEnergonRate = CommonProperties.Station0EnergyPullRate;
         station.HPInscreaseTimer = station.energyInscreaseTime;
         //station.stationShotTime = CommonProperties.Station0ShotTime;
@@ -249,7 +250,7 @@ public class GameController : MonoBehaviour
         stationCPU.fillingSpeed = CommonProperties.star0FillingReducer; ;
         stationCPU.ShipsAssigned = 0;
         stationCPU.energyToConnection = CommonProperties.Station0EnergyToConnection;
-        stationCPU.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
+        //stationCPU.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
         stationCPU.energyToGetFromLine = CommonProperties.Station0EnergyFromLine;
         //stationCPU.energyRequiredToShot = CommonProperties.Station0EnergytoShot;
         stationCPU.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
@@ -260,6 +261,7 @@ public class GameController : MonoBehaviour
         //stationCPU.stationShotTimer = stationCPU.stationShotTime;
         stationCPU.energonCatchDistance = CommonProperties.Station0EnergonCatchDistance;
         stationCPU.energyLimitOfStation = CommonProperties.Station0EnergyLimit;
+        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
         stationCPU.speedOfBullet = CommonProperties.Station0BulletSpeed;
         stationCPU.colorToEnergy = CommonProperties.Station0ColorToEnergyMultiplyer;
         stationCPU.ShipsLimit = CommonProperties.Station0ShipsLimit;
@@ -305,11 +307,12 @@ public class GameController : MonoBehaviour
         stationCPU.fillingSpeed = CommonProperties.star0FillingReducer; ;
         stationCPU.ShipsAssigned = 0;
         stationCPU.energyToConnection = CommonProperties.Station0EnergyToConnection;
-        stationCPU.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
+        //stationCPU.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
         stationCPU.energyToGetFromLine = CommonProperties.Station0EnergyFromLine;
         //stationCPU.energyRequiredToShot = CommonProperties.Station0EnergytoShot;
         stationCPU.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
         stationCPU.energyInscreaseTimer = stationCPU.energyInscreaseTime;
+        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
         stationCPU.HPInscreaseTimer = stationCPU.energyInscreaseTime;
         //stationCPU.stationShotTime = CommonProperties.Station0ShotTime;
         //stationCPU.stationShotTimer = stationCPU.stationShotTime;
@@ -364,11 +367,12 @@ public class GameController : MonoBehaviour
         stationCPU.fillingSpeed = CommonProperties.star0FillingReducer; ;
         stationCPU.ShipsAssigned = 0;
         stationCPU.energyToConnection = CommonProperties.Station0EnergyToConnection;
-        stationCPU.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
+        //stationCPU.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
         stationCPU.energyToGetFromLine = CommonProperties.Station0EnergyFromLine;
         //stationCPU.energyRequiredToShot = CommonProperties.Station0EnergytoShot;
         stationCPU.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
         stationCPU.energyInscreaseTimer = stationCPU.energyInscreaseTime;
+        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
         stationCPU.HPInscreaseTimer = stationCPU.energyInscreaseTime;
         //stationCPU.stationShotTime = CommonProperties.Station0ShotTime;
         //stationCPU.stationShotTimer = stationCPU.stationShotTime;
@@ -423,11 +427,12 @@ public class GameController : MonoBehaviour
         stationCPU.fillingSpeed = CommonProperties.star0FillingReducer; ;
         stationCPU.ShipsAssigned = 0;
         stationCPU.energyToConnection = CommonProperties.Station0EnergyToConnection;
-        stationCPU.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
+        //stationCPU.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
         stationCPU.energyToGetFromLine = CommonProperties.Station0EnergyFromLine;
         //stationCPU.energyRequiredToShot = CommonProperties.Station0EnergytoShot;
         stationCPU.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
         stationCPU.energyInscreaseTimer = stationCPU.energyInscreaseTime;
+        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
         stationCPU.HPInscreaseTimer = stationCPU.energyInscreaseTime;
         //stationCPU.stationShotTime = CommonProperties.Station0ShotTime;
         //stationCPU.stationShotTimer = stationCPU.stationShotTime;

@@ -69,8 +69,12 @@ public class EnergonMoving : MonoBehaviour
     private void OnEnable()
     {
         energonTransform = transform;
-        colorRGB = Random.Range(0,2)>0 ? Random.Range(1f, 3f): Random.Range(0, 2) > 0 ? Random.Range(4f, 6f) : Random.Range(0, 2) > 0 ? Random.Range(7f, 10f) :  Random.Range(3f, 8f);
-        speedOfEnergon = colorRGB < 3f ? 1 : colorRGB < 5f ? 1.5f : colorRGB < 7f ? 2 : colorRGB < 9f ? 2.5f : 3;
+        //colorRGB = Random.Range(0,2)>0 ? Random.Range(1f, 3f): Random.Range(0, 2) > 0 ? Random.Range(4f, 6f) : Random.Range(0, 2) > 0 ? Random.Range(7f, 10f) :  Random.Range(3f, 8f);
+        //speedOfEnergon = colorRGB < 3f ? 1 : colorRGB < 5f ? 1.5f : colorRGB < 7f ? 2 : colorRGB < 9f ? 2.5f : 3;
+
+        colorRGB = 4f;
+        speedOfEnergon = 3f;
+
         nextRotatioLerp = speedOfEnergon*0.03f; //0.05f
         //colorRGBNextTime = 3f;
         //colorRGBNext = Random.Range(1f, 10f);

@@ -164,10 +164,11 @@ public class StarController : MonoBehaviour
         station.fillingSpeed = CommonProperties.star0FillingReducer;
         station.ShipsAssigned = 0;
         station.energyToConnection = CommonProperties.Station0EnergyToConnection;
-        station.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
+        //station.energyLoseIfDestroyed = CommonProperties.Station0GroupEnergyLoseIfDestroyed;
         station.energyToGetFromLine = CommonProperties.Station0EnergyFromLine;
         station.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
         station.energyInscreaseTimer = station.energyInscreaseTime;
+        station.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
         station.HPInscreaseTimer = station.energyInscreaseTime;
         //station.stationShotTime = CommonProperties.Station0ShotTime;
         //station.stationShotTimer = station.stationShotTime;

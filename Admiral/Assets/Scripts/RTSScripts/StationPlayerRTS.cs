@@ -265,6 +265,11 @@ public class StationPlayerRTS : StationClass
     //        aimingRectOfThis.SetActive(false);
     //    }
     //}
+    public override void produceTheEnergy()
+    {
+        base.produceTheEnergy();
+        foreach (StationPlayerRTS stationPlayer in CommonProperties.playerStations) stationPlayer.checkIfStationCanConnect();
+    }
 
     public override void pullTheEnergyFromEnergons()
     {
@@ -309,16 +314,15 @@ public class StationPlayerRTS : StationClass
         }
     }
 
-    private void energyIncrementAndCheckTheStationPanel()
-    {
-        if (groupWhereTheStationIs != null/*&& groupWhereTheStationIs.Count > 0*/) CommonProperties.energyOfStationGroups[groupWhereTheStationIs]++;
-        else energyOfStation++;
-        if (stationPanelIsActiveForThis)
-        {
-            CommonProperties.stationPanelScript.updateVariablesAfterEnergyChanges();
-        }
-        foreach (StationPlayerRTS stationPlayer in CommonProperties.playerStations) stationPlayer.checkIfStationCanConnect();
-    }
+    
+
+    //private void energyIncrementAndCheckTheStationPanel()
+    //{
+    //    //if (stationPanelIsActiveForThis)
+    //    //{
+    //    //    CommonProperties.stationPanelScript.updateVariablesAfterEnergyChanges();
+    //    //}
+    //}
 
     //private void checkIfStationCanShot()
     //{
@@ -465,9 +469,10 @@ public class StationPlayerRTS : StationClass
             station.energyToNextUpgradeOfGun = CommonProperties.gun0to1Upgrd;
             station.fillingSpeed = CommonProperties.star1FillingReducer;
             station.energyToConnection = CommonProperties.Station1EnergyToConnection;
-            station.energyLoseIfDestroyed = CommonProperties.Station1GroupEnergyLoseIfDestroyed;
+            //station.energyLoseIfDestroyed = CommonProperties.Station1GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station1EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station1EnergyProduceTime;
+            station.energyProdeucePerTime = CommonProperties.Station1EnergyProduceAmount;
             station.energyPullFromEnergonRate = CommonProperties.Station1EnergyPullRate;
             //station.stationShotTime = CommonProperties.Station1ShotTime;
             station.energonCatchDistance = CommonProperties.Station1EnergonCatchDistance;
@@ -485,9 +490,10 @@ public class StationPlayerRTS : StationClass
             station.energyToNextUpgradeOfGun = CommonProperties.gun1to2Upgrd;
             station.fillingSpeed = CommonProperties.star2FillingReducer;
             station.energyToConnection = CommonProperties.Station2EnergyToConnection;
-            station.energyLoseIfDestroyed = CommonProperties.Station2GroupEnergyLoseIfDestroyed;
+            //station.energyLoseIfDestroyed = CommonProperties.Station2GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station2EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station2EnergyProduceTime;
+            station.energyProdeucePerTime = CommonProperties.Station2EnergyProduceAmount;
             station.energyPullFromEnergonRate = CommonProperties.Station2EnergyPullRate;
             //station.stationShotTime = CommonProperties.Station2ShotTime;
             station.energonCatchDistance = CommonProperties.Station2EnergonCatchDistance;
@@ -505,9 +511,10 @@ public class StationPlayerRTS : StationClass
             station.energyToNextUpgradeOfGun = CommonProperties.gun2to3Upgrd;
             station.fillingSpeed = CommonProperties.star3FillingReducer;
             station.energyToConnection = CommonProperties.Station3EnergyToConnection;
-            station.energyLoseIfDestroyed = CommonProperties.Station3GroupEnergyLoseIfDestroyed;
+            //station.energyLoseIfDestroyed = CommonProperties.Station3GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station3EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station3EnergyProduceTime;
+            station.energyProdeucePerTime = CommonProperties.Station3EnergyProduceAmount;
             station.energyPullFromEnergonRate = CommonProperties.Station3EnergyPullRate;
             //station.stationShotTime = CommonProperties.Station3ShotTime;
             station.energonCatchDistance = CommonProperties.Station3EnergonCatchDistance;
@@ -678,12 +685,13 @@ public class StationPlayerRTS : StationClass
         //}
 
         //timer to increment the energy naturally
-        if (energyInscreaseTimer > 0 && groupWhereTheStationIs==null)
+        if (energyInscreaseTimer > 0 /*&& groupWhereTheStationIs==null*/)
         {
             energyInscreaseTimer -= Time.deltaTime;
             if (energyInscreaseTimer < 0)
             {
-                energyIncrementAndCheckTheStationPanel();
+                produceTheEnergy();
+                //energyIncrementAndCheckTheStationPanel();
                 energyInscreaseTimer = energyInscreaseTime;
             }
         }

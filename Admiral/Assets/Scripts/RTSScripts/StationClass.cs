@@ -33,6 +33,8 @@ public class StationClass : MonoBehaviour
     [HideInInspector]
     public float energyInscreaseTimer;
     [HideInInspector]
+    public int energyProdeucePerTime;
+    [HideInInspector]
     public float energyPullFromEnergonRate;
     [HideInInspector]
     public float HPInscreaseTimer;
@@ -62,8 +64,6 @@ public class StationClass : MonoBehaviour
     public int energyToNextUpgradeOfGun;
     [HideInInspector]
     public int energyToConnection;
-    [HideInInspector]
-    public int energyLoseIfDestroyed;
 
     [HideInInspector]
     public int energyOfStationToUPGradeGun;
@@ -207,7 +207,32 @@ public class StationClass : MonoBehaviour
         //fillingSpeed = 1;//TO DELETE CAUSE IS ASSIGNED WHILE INSTANTIATING
     }
 
-    public virtual void pullTheEnergyFromEnergons() { }
+    public virtual void pullTheEnergyFromEnergons()
+    {
+       
+    }
+
+    public virtual void produceTheEnergy()
+    {
+        if (groupWhereTheStationIs != null)
+        {
+            if (CommonProperties.energyLimitOfStationGroups[groupWhereTheStationIs] > CommonProperties.energyOfStationGroups[groupWhereTheStationIs])
+            {
+                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] += energyProdeucePerTime;
+
+                if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.energyLimitOfStationGroups[groupWhereTheStationIs])
+                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] = CommonProperties.energyLimitOfStationGroups[groupWhereTheStationIs];
+            }
+        }
+        else
+        {
+            if (energyLimitOfStation > energyOfStation)
+            {
+                energyOfStation += energyProdeucePerTime;
+                if (energyOfStation > energyLimitOfStation) energyOfStation = energyLimitOfStation;
+            }
+        }
+    }
 
     public virtual void  utilaizeTheEnergy(bool isRecursionCall)
     {
@@ -239,6 +264,8 @@ public class StationClass : MonoBehaviour
         {
             for (int i = 0; i < CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count; i++)
                 if (CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1][i].maternalStation == this) CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1][i].maternalStation = newStation;
+            //setting upgraded station under defence if previous station was under defence
+            if (CPUfleetManager.checkIfStationUnderDefence(CPUNumber, this)) CPUfleetManager.setTheStationToDefence(CPUNumber, newStation);
         }
 
         //null means destroying the station 
@@ -256,6 +283,9 @@ public class StationClass : MonoBehaviour
             ObjectPulled.SetActive(true);
             for (int i = 0; i < CommonProperties.CPUStations.Count; i++) CommonProperties.CPUStations[i].giveAnOrderToFleet();
 
+            //setting the state of fleet to free in case if station under defence
+            if (CPUfleetManager.checkIfStationUnderDefence(CPUNumber, this)) CPUfleetManager.setTheStateOfFleet(CPUNumber, 0);
+
             //regrouping the stations in the group of this station
             if (groupWhereTheStationIs != null /*&& groupWhereTheStationIs.Count > 0*/)
             {
@@ -269,10 +299,7 @@ public class StationClass : MonoBehaviour
                     stationsConnectedToOldStation.ConnectedStations.Remove(this);
                 }
 
-                //reduce the energy of group
-                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= energyLoseIfDestroyed;
-                if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] < 0) CommonProperties.energyOfStationGroups[groupWhereTheStationIs] = 0;
-                else energyOfGroupBuffer = CommonProperties.energyOfStationGroups[groupWhereTheStationIs];
+                energyOfGroupBuffer = CommonProperties.energyOfStationGroups[groupWhereTheStationIs];
 
                 
                 //removing the station group from master group and from energy groups because new set of groups should be established
@@ -524,14 +551,14 @@ public class StationClass : MonoBehaviour
                 }
                 station.energyOfStation += energyOfDiedGroup;
             }
-            else if (CommonProperties.CPUStationsDictionary[CPUNumber].Count>0) {
+            else if (CommonProperties.CPUStationsDictionary[CPUNumber-1].Count>0) {
                 StationClass station = null;
-                for (int i = 0; i < CommonProperties.CPUStationsDictionary[CPUNumber].Count; i++)
+                for (int i = 0; i < CommonProperties.CPUStationsDictionary[CPUNumber-1].Count; i++)
                 {
-                    if (i == 0) station = CommonProperties.CPUStationsDictionary[CPUNumber][i];
+                    if (i == 0) station = CommonProperties.CPUStationsDictionary[CPUNumber-1][i];
                     else
                     {
-                        if (station.stationCurrentLevel < CommonProperties.CPUStationsDictionary[CPUNumber][i].stationCurrentLevel) station = CommonProperties.CPUStationsDictionary[CPUNumber][i];
+                        if (station.stationCurrentLevel < CommonProperties.CPUStationsDictionary[CPUNumber-1][i].stationCurrentLevel) station = CommonProperties.CPUStationsDictionary[CPUNumber-1][i];
                     }
                 }
                 station.energyOfStation += energyOfDiedGroup;
@@ -604,9 +631,9 @@ public class StationClass : MonoBehaviour
     }
 
     //used only by CPU Station and here it is because it is called from
-    public /*virtual*/ void callForAHelp() { 
+    //public /*virtual*/ void callForAHelp() { 
     
-    }
+    //}
 
     ////Used by CPU statuin only
     //public virtual void gatherTheReferencesToShipsOfStation() { 
@@ -628,4 +655,6 @@ public class StationClass : MonoBehaviour
         }
         fillingLine.localPosition = new Vector3(lifeLineAmount, 0, 0);
     }
+
+    
 }

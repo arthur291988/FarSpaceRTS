@@ -18,9 +18,11 @@ public class CPUFleetManager : MonoBehaviour
     private Dictionary<int, byte> CPUFleetStates;
     private Dictionary<int, float> CPUFleetPrepareTimer;
     private Dictionary<int, float> CPUFleetAttackTimer;
-    private Dictionary<int, bool> CPUIsPrepearingToAttack;
+    //private Dictionary<int, bool> CPUIsPrepearingToAttack;
     private Dictionary<int, Vector3> CPUStartToAttackPoint;
     private Dictionary<int, StationClass> CPUStationUderDefence;
+    private Dictionary<int, StationClass> StationToAttack;
+    private Dictionary<int, List<CPUBattleShip>> CPUBattleShipsPrepearedToAttack;
 
     private const float radiusOfShipsRingAroundStation = 6;
     private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 13;
@@ -35,8 +37,6 @@ public class CPUFleetManager : MonoBehaviour
     private const byte staionAttackState = 2;
     //private const byte starAttackState = 3;
     private const byte defenceState = 4; //this one beats any other
-
-    private List<CPUBattleShip> CPUBattleShipsPrepearedToAttack;
 
     public const float oneStepCloseStationsMaxDistance = 140f;
 
@@ -65,13 +65,13 @@ public class CPUFleetManager : MonoBehaviour
             { 3, FLEET_ATTACK_TIME },
             { 4, FLEET_ATTACK_TIME },
         };
-        CPUIsPrepearingToAttack = new Dictionary<int, bool>
-        {
-            { 1, false },
-            { 2, false },
-            { 3, false },
-            { 4, false },
-        };
+        //CPUIsPrepearingToAttack = new Dictionary<int, bool>
+        //{
+        //    { 1, false },
+        //    { 2, false },
+        //    { 3, false },
+        //    { 4, false },
+        //};
         CPUStartToAttackPoint = new Dictionary<int, Vector3>     
         {
             { 1, Vector3.zero},
@@ -86,11 +86,23 @@ public class CPUFleetManager : MonoBehaviour
             { 3, null},
             { 4, null},
         };
-
+        StationToAttack = new Dictionary<int, StationClass>
+        {
+            { 1, null},
+            { 2, null},
+            { 3, null},
+            { 4, null},
+        };
+        CPUBattleShipsPrepearedToAttack = new Dictionary<int, List<CPUBattleShip>>
+        {
+            { 1, new List<CPUBattleShip>()},
+            { 2, new List<CPUBattleShip>()},
+            { 3, new List<CPUBattleShip>()},
+            { 4, new List<CPUBattleShip>()},
+        }; 
 
         innnerCircleMax = 8;
         radiusGroup = 3;
-        CPUBattleShipsPrepearedToAttack = new List<CPUBattleShip>();
 
         squardPositions = new List<Vector3>();
     }
@@ -106,8 +118,8 @@ public class CPUFleetManager : MonoBehaviour
         {
             CPUFleetStates[CPUNumber] = defenceState;
             CPUStationUderDefence[CPUNumber] = station;
-            CPUIsPrepearingToAttack[CPUNumber] = false;
-            CPUBattleShipsPrepearedToAttack.Clear();
+            //CPUIsPrepearingToAttack[CPUNumber] = false;
+            CPUBattleShipsPrepearedToAttack[CPUNumber].Clear();
             squardPositions.Clear();
             for (int i = 0; i < CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count; i++)
             {
@@ -139,28 +151,77 @@ public class CPUFleetManager : MonoBehaviour
 
     public int getTheFleetState(int CPUNumber) { return CPUFleetStates[CPUNumber]; }
 
-    public void preapareForAttack(int CPUNumber, Vector3 stationPosition)
+    public void setTheStationToDefence(int CPUNumber, StationClass station) {
+        CPUStationUderDefence[CPUNumber] = station;
+    }
+
+    public void setTheStateOfFleet(int CPUNumber, byte state) {
+        CPUFleetStates[CPUNumber] = state;
+    }
+
+    public void preapareForAttack(int CPUNumber)
     {
         if (CPUFleetStates[CPUNumber] == freeState)
         {
             if (CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count > CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count * SHIPS_COUNT_MINIMUM_TO_ATTACK)
             {
                 squardPositions.Clear();
-                CPUBattleShipsPrepearedToAttack.Clear();
+                StationClass stationCPUAttackStartFrom = null;
+                List<StationClass> stationsToAttack = new List<StationClass>();
+                StationClass stationToAttack = null;
+
+                foreach (StationCPU station in CommonProperties.CPUStationsDictionary[CPUNumber - 1]) {
+                    for (int i = 0; i < CommonProperties.allStations.Count; i++)
+                    {
+                        if (CommonProperties.allStations[i].CPUNumber != CPUNumber)
+                        {
+                            if ((CommonProperties.allStations[i].stationPosition - station.stationPosition).magnitude <= oneStepCloseStationsMaxDistance)
+                                stationsToAttack.Add(CommonProperties.allStations[i]);
+                        }
+                    }
+                }
+                if (stationsToAttack.Count == 1)
+                {
+                    stationToAttack = stationsToAttack[0];
+                }
+                else if (stationsToAttack.Count != 0)
+                {
+                    for (int i = 0; i < stationsToAttack.Count; i++)
+                    {
+                        if (i == 0) stationToAttack = stationsToAttack[i];
+                        else
+                        {
+                            if (stationsToAttack[i].stationDefenceFleetPower() < stationToAttack.stationDefenceFleetPower()) stationToAttack = stationsToAttack[i];
+                        }
+                    }
+                }
+                else return;
+
+                for (int i = 0; i < CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count;i++) {
+                    if ((CommonProperties.CPUStationsDictionary[CPUNumber - 1][i].stationPosition - stationToAttack.stationPosition).magnitude <= oneStepCloseStationsMaxDistance)
+                    {
+                        stationCPUAttackStartFrom = CommonProperties.CPUStationsDictionary[CPUNumber - 1][i];
+                        break;
+                    }
+                }
+
+                squardPositions.Clear();
+                CPUBattleShipsPrepearedToAttack[CPUNumber].Clear();
                 //reducing the battle ships count to attack is for leave some ships to defence
                 for (int i = 0; i < (CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count - CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count * 3); i++)
                 {
-                    CPUBattleShipsPrepearedToAttack.Add(CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1][i]);
+                    CPUBattleShipsPrepearedToAttack[CPUNumber].Add(CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1][i]);
                 }
-                determineThePointsForFleetToMove(stationPosition, Vector3.zero);
+                determineThePointsForFleetToMove(CPUNumber,stationCPUAttackStartFrom.stationPosition, Vector3.zero);
 
-                for (int i = 0; i < CPUBattleShipsPrepearedToAttack.Count; i++)
+                for (int i = 0; i < CPUBattleShipsPrepearedToAttack[CPUNumber].Count; i++)
                 {
-                    CPUBattleShipsPrepearedToAttack[i].giveAShipMoveOrder(squardPositions[i], null);
+                    CPUBattleShipsPrepearedToAttack[CPUNumber][i].giveAShipMoveOrder(squardPositions[i], null);
                 }
                 CPUFleetPrepareTimer[CPUNumber] = FLEET_ATTACK_PREPARE_TIME;
-                CPUIsPrepearingToAttack[CPUNumber] = true;
-                CPUStartToAttackPoint[CPUNumber] = stationPosition;
+                //CPUIsPrepearingToAttack[CPUNumber] = true;
+                CPUStartToAttackPoint[CPUNumber] = stationCPUAttackStartFrom.stationPosition;
+                StationToAttack[CPUNumber] = stationToAttack;
                 CPUFleetStates[CPUNumber] = prepareState;
                 squardPositions.Clear();
             }
@@ -169,55 +230,63 @@ public class CPUFleetManager : MonoBehaviour
 
     public void attackTheStation(int CPUNumber, Vector3 gatheredPoint)
     {
-        byte index = 0;
-        List<StationClass> stationsToAttack = new List<StationClass>();
-        StationClass stationToAttack = null;
+        //byte index = 0;
+        //List<StationClass> stationsToAttack = new List<StationClass>();
+        //StationClass stationToAttack = null;
+
+        //for (int i = 0; i < CommonProperties.allStations.Count; i++)
+        //{
+        //    if (CommonProperties.allStations[i].CPUNumber != CPUNumber)
+        //    {
+        //        if ((CommonProperties.allStations[i].stationPosition - gatheredPoint).magnitude <= oneStepCloseStationsMaxDistance)
+        //            stationsToAttack.Add(CommonProperties.allStations[i]);
+        //    }
+        //}
+        //if (stationsToAttack.Count == 1)
+        //{
+        //    determineThePointsForFleetToMove(stationsToAttack[0].stationPosition, gatheredPoint);
+        //    for (int i = 0; i < CPUBattleShipsPrepearedToAttack.Count; i++)
+        //    {
+        //        if (CPUBattleShipsPrepearedToAttack[i] != null && CPUBattleShipsPrepearedToAttack[i].CPUNumber == CPUNumber && CPUBattleShipsPrepearedToAttack[i].isActiveAndEnabled)
+        //            CPUBattleShipsPrepearedToAttack[i].giveAShipMoveOrder(squardPositions[i], null);
+        //    }
+        //}
+        //else if (stationsToAttack.Count != 0)
+        //{
+        //    for (int i = 0; i < stationsToAttack.Count; i++)
+        //    {
+        //        if (i == 0) stationToAttack = stationsToAttack[i];
+        //        else
+        //        {
+        //            if (stationsToAttack[i].stationDefenceFleetPower()< stationToAttack.stationDefenceFleetPower()) stationToAttack = stationsToAttack[i];
+        //        }
+        //        //index++;
+        //    }
+
+        //    determineThePointsForFleetToMove(stationToAttack.stationPosition, CPUStartToAttackPoint[CPUNumber]);
+        //    for (int i = 0; i < CPUBattleShipsPrepearedToAttack.Count; i++)
+        //    {
+        //        if (CPUBattleShipsPrepearedToAttack[i] != null && CPUBattleShipsPrepearedToAttack[i].CPUNumber == CPUNumber && CPUBattleShipsPrepearedToAttack[i].isActiveAndEnabled)
+        //            CPUBattleShipsPrepearedToAttack[i].giveAShipMoveOrder(squardPositions[i], null);
+        //    }
+        //}
+
+
         squardPositions.Clear();
-
-        for (int i = 0; i < CommonProperties.allStations.Count; i++)
+        determineThePointsForFleetToMove(CPUNumber,StationToAttack[CPUNumber].stationPosition, gatheredPoint);
+        for (int i = 0; i < CPUBattleShipsPrepearedToAttack[CPUNumber].Count; i++)
         {
-            if (CommonProperties.allStations[i].CPUNumber != CPUNumber)
-            {
-                if ((CommonProperties.allStations[i].stationPosition - gatheredPoint).magnitude <= oneStepCloseStationsMaxDistance)
-                    stationsToAttack.Add(CommonProperties.allStations[i]);
-            }
+            if (CPUBattleShipsPrepearedToAttack[CPUNumber][i] != null && CPUBattleShipsPrepearedToAttack[CPUNumber][i].CPUNumber == CPUNumber && CPUBattleShipsPrepearedToAttack[CPUNumber][i].isActiveAndEnabled)
+                CPUBattleShipsPrepearedToAttack[CPUNumber][i].giveAShipMoveOrder(squardPositions[i], null);
         }
-        if (stationsToAttack.Count == 1)
-        {
-            determineThePointsForFleetToMove(stationsToAttack[0].stationPosition, gatheredPoint);
-            for (int i = 0; i < CPUBattleShipsPrepearedToAttack.Count; i++)
-            {
-                if (CPUBattleShipsPrepearedToAttack[i] != null && CPUBattleShipsPrepearedToAttack[i].CPUNumber == CPUNumber && CPUBattleShipsPrepearedToAttack[i].isActiveAndEnabled)
-                    CPUBattleShipsPrepearedToAttack[i].giveAShipMoveOrder(squardPositions[i], null);
-            }
-        }
-        else if (stationsToAttack.Count != 0)
-        {
-            for (int i = 0; i < stationsToAttack.Count; i++)
-            {
-                if (index == 0) stationToAttack = stationsToAttack[i];
-                else
-                {
-                    if (stationsToAttack[i].stationDefenceFleetPower()< stationToAttack.stationDefenceFleetPower()) stationToAttack = CommonProperties.allStations[i];
-                }
-                index++;
-            }
-
-            determineThePointsForFleetToMove(stationToAttack.stationPosition, CPUStartToAttackPoint[CPUNumber]);
-            for (int i = 0; i < CPUBattleShipsPrepearedToAttack.Count; i++)
-            {
-                if (CPUBattleShipsPrepearedToAttack[i] != null && CPUBattleShipsPrepearedToAttack[i].CPUNumber == CPUNumber && CPUBattleShipsPrepearedToAttack[i].isActiveAndEnabled)
-                    CPUBattleShipsPrepearedToAttack[i].giveAShipMoveOrder(squardPositions[i], null);
-            }
-        }
-        CPUBattleShipsPrepearedToAttack.Clear();
+        CPUBattleShipsPrepearedToAttack[CPUNumber].Clear();
         squardPositions.Clear();
         CPUFleetStates[CPUNumber] = staionAttackState;
         CPUFleetAttackTimer[CPUNumber] = FLEET_ATTACK_TIME;
     }
 
 
-    private void determineThePointsForFleetToMove(Vector3 pointToMove, Vector3 gatherPoint) {
+    private void determineThePointsForFleetToMove(int CPUNumber, Vector3 pointToMove, Vector3 gatherPoint) {
         float stepForOuterRadius = 1;
         Vector3 moveToPoint;
         //that means that fleet will not placed in center of enemy station or star or ally station, it will stay just 7 steps before
@@ -225,9 +294,9 @@ public class CPUFleetManager : MonoBehaviour
         if (gatherPoint != Vector3.zero) moveToPoint = pointToMove + (gatherPoint - pointToMove).normalized * 6;
         else moveToPoint = pointToMove;
 
-        if (CPUBattleShipsPrepearedToAttack.Count > 1)
+        if (CPUBattleShipsPrepearedToAttack[CPUNumber].Count > 1)
         {
-            for (int i = 0; i < CPUBattleShipsPrepearedToAttack.Count; i++)
+            for (int i = 0; i < CPUBattleShipsPrepearedToAttack[CPUNumber].Count; i++)
             {
                 if (i == 0)
                 {
@@ -244,8 +313,8 @@ public class CPUFleetManager : MonoBehaviour
                     squardPositions.Add(newPos);
                     if (i == innnerCircleMax)
                     {
-                        if ((CPUBattleShipsPrepearedToAttack.Count - squardPositions.Count) > innnerCircleMax * 2) stepForOuterRadius = innnerCircleMax * 2;
-                        else stepForOuterRadius = CPUBattleShipsPrepearedToAttack.Count - squardPositions.Count;
+                        if ((CPUBattleShipsPrepearedToAttack[CPUNumber].Count - squardPositions.Count) > innnerCircleMax * 2) stepForOuterRadius = innnerCircleMax * 2;
+                        else stepForOuterRadius = CPUBattleShipsPrepearedToAttack[CPUNumber].Count - squardPositions.Count;
                     }
                 }
                 else if (i <= (innnerCircleMax * 3))
@@ -259,8 +328,8 @@ public class CPUFleetManager : MonoBehaviour
                     squardPositions.Add(newPos);
                     if (i == (innnerCircleMax * 3))
                     {
-                        if ((CPUBattleShipsPrepearedToAttack.Count - squardPositions.Count) > innnerCircleMax * 3) stepForOuterRadius = innnerCircleMax * 3;
-                        else stepForOuterRadius = CPUBattleShipsPrepearedToAttack.Count - squardPositions.Count;
+                        if ((CPUBattleShipsPrepearedToAttack[CPUNumber].Count - squardPositions.Count) > innnerCircleMax * 3) stepForOuterRadius = innnerCircleMax * 3;
+                        else stepForOuterRadius = CPUBattleShipsPrepearedToAttack[CPUNumber].Count - squardPositions.Count;
                     }
                 }
                 else if (i <= (innnerCircleMax * 7))
@@ -274,8 +343,8 @@ public class CPUFleetManager : MonoBehaviour
                     squardPositions.Add(newPos);
                     if (i == (innnerCircleMax * 7))
                     {
-                        if ((CPUBattleShipsPrepearedToAttack.Count - squardPositions.Count) > innnerCircleMax * 4) stepForOuterRadius = innnerCircleMax * 4;
-                        else stepForOuterRadius = CPUBattleShipsPrepearedToAttack.Count - squardPositions.Count;
+                        if ((CPUBattleShipsPrepearedToAttack[CPUNumber].Count - squardPositions.Count) > innnerCircleMax * 4) stepForOuterRadius = innnerCircleMax * 4;
+                        else stepForOuterRadius = CPUBattleShipsPrepearedToAttack[CPUNumber].Count - squardPositions.Count;
                     }
                 }
                 else if (i <= (innnerCircleMax * 15))
@@ -295,39 +364,35 @@ public class CPUFleetManager : MonoBehaviour
     private void Update()
     {
         //time before fleet of CPU starts mass attack
-        if (CPUFleetPrepareTimer[1] > 0 && CPUIsPrepearingToAttack[1])
+        if (CPUFleetPrepareTimer[1] > 0 && CPUFleetStates[1]==prepareState)
         {
             CPUFleetPrepareTimer[1] -= Time.deltaTime;
             if (CPUFleetPrepareTimer[1] <= 0)
             {
-                CPUIsPrepearingToAttack[1] = false;
                 attackTheStation(1, CPUStartToAttackPoint[1]);
             }
         }
-        if (CPUFleetPrepareTimer[2] > 0 && CPUIsPrepearingToAttack[2])
+        if (CPUFleetPrepareTimer[2] > 0 && CPUFleetStates[2] == prepareState)
         {
             CPUFleetPrepareTimer[2] -= Time.deltaTime;
             if (CPUFleetPrepareTimer[2] <= 0)
             {
-                CPUIsPrepearingToAttack[2] = false;
                 attackTheStation(2, CPUStartToAttackPoint[2]);
             }
         }
-        if (CPUFleetPrepareTimer[3] > 0 && CPUIsPrepearingToAttack[3])
+        if (CPUFleetPrepareTimer[3] > 0 && CPUFleetStates[3] == prepareState)
         {
             CPUFleetPrepareTimer[3] -= Time.deltaTime;
             if (CPUFleetPrepareTimer[3] <= 0)
             {
-                CPUIsPrepearingToAttack[3] = false;
                 attackTheStation(3, CPUStartToAttackPoint[3]);
             }
         }
-        if (CPUFleetPrepareTimer[4] > 0 && CPUIsPrepearingToAttack[4])
+        if (CPUFleetPrepareTimer[4] > 0 && CPUFleetStates[4] == prepareState)
         {
             CPUFleetPrepareTimer[4] -= Time.deltaTime;
             if (CPUFleetPrepareTimer[4] <= 0)
             {
-                CPUIsPrepearingToAttack[4] = false;
                 attackTheStation(4, CPUStartToAttackPoint[4]);
             }
         }

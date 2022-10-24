@@ -34,18 +34,19 @@ public class BulletPlayerGun : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         int layerOfOther = other.gameObject.layer;
-        //CPUNumber + 10 is the lyer of player/or CPU that instantiated thiы bullet. >10 is necessary to make sure that bullet does not interact with other layers (Default for example)
+        //CPUNumber + 10 is the lyer of player/or CPU that instantiated this bullet. >10 is necessary to make sure that bullet does not interact with other layers (Default for example)
         if (layerOfOther != (CPUNumber+10)&& layerOfOther>=10) {
             bulletBurstPullList = ObjectPullerRTS.current.GetGun1BulletBurstPull();
             bulletBurst = ObjectPullerRTS.current.GetGameObjectFromPull(bulletBurstPullList);
             bulletBurst.transform.position = transform.position;
-            bulletBurst.SetActive(true);
-            disactivateBullet();
+            bulletBurst.SetActive(true); 
             if (other.CompareTag("BattleShip"))
             {
-               if (layerOfOther > 10) other.GetComponent<CPUBattleShip>().reduceTheHPOfShip(harm);
-               else other.GetComponent<PlayerBattleShip>().reduceTheHPOfShip(harm);
+                if (layerOfOther > 10) other.GetComponent<CPUBattleShip>().reduceTheHPOfShip(harm);
+                else other.GetComponent<PlayerBattleShip>().reduceTheHPOfShip(harm);
             }
+            disactivateBullet();
+            
             //else if (other.CompareTag("PowerShield")) { 
             
             //}
