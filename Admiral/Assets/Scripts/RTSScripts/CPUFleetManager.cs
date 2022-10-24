@@ -25,7 +25,7 @@ public class CPUFleetManager : MonoBehaviour
     private const float radiusOfShipsRingAroundStation = 6;
     private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 13;
     private const int FLEET_ATTACK_TIME = 120;
-    private const int FLEET_ATTACK_PREPARE_TIME = 15;
+    private const int FLEET_ATTACK_PREPARE_TIME = 25;
 
     private int innnerCircleMax;
     private float radiusGroup;
@@ -108,6 +108,7 @@ public class CPUFleetManager : MonoBehaviour
             CPUStationUderDefence[CPUNumber] = station;
             CPUIsPrepearingToAttack[CPUNumber] = false;
             CPUBattleShipsPrepearedToAttack.Clear();
+            squardPositions.Clear();
             for (int i = 0; i < CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count; i++)
             {
                 Vector3 newPos;
@@ -144,6 +145,8 @@ public class CPUFleetManager : MonoBehaviour
         {
             if (CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count > CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count * SHIPS_COUNT_MINIMUM_TO_ATTACK)
             {
+                squardPositions.Clear();
+                CPUBattleShipsPrepearedToAttack.Clear();
                 //reducing the battle ships count to attack is for leave some ships to defence
                 for (int i = 0; i < (CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count - CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count * 3); i++)
                 {
@@ -169,6 +172,7 @@ public class CPUFleetManager : MonoBehaviour
         byte index = 0;
         List<StationClass> stationsToAttack = new List<StationClass>();
         StationClass stationToAttack = null;
+        squardPositions.Clear();
 
         for (int i = 0; i < CommonProperties.allStations.Count; i++)
         {
