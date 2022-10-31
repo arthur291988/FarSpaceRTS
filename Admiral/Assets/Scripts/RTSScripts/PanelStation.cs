@@ -98,7 +98,7 @@ public class PanelStation : MonoBehaviour
 
     private const float radiusOfShipsRingAroundStation = 6f;
     private Vector3 stationPosition;
-    private int stepOfCircleAroundStationToLaunchShips;
+    private int stepOfCircleAroundStationToPutShips;
     private CameraManager cameraManager;
 
 
@@ -109,6 +109,7 @@ public class PanelStation : MonoBehaviour
     {
         //commonEnenrgy = 0;
         cameraManager = CommonProperties.MainCameraOfRTS.GetComponent<CameraManager>();
+        stepOfCircleAroundStationToPutShips = 0;
     }
     private void OnEnable()
     {
@@ -126,7 +127,6 @@ public class PanelStation : MonoBehaviour
         updateVariablesAfterEnergyChanges();
         stationPosition = this.station.stationPosition;
         //radiusOfShipsRingAroundStation = station.radiusOfShipsRingAroundStation;
-        stepOfCircleAroundStationToLaunchShips = 0;
         if (station.groupWhereTheStationIs != null /*&& station.groupWhereTheStationIs.Count > 0*/) ConnectionsToken.SetActive(true);
     }
 
@@ -370,10 +370,11 @@ public class PanelStation : MonoBehaviour
     {
         Vector3 newPos;
         float step = (Mathf.PI * 2) / station.ShipsLimit; // отступ
-        newPos.x = stationPosition.x + Mathf.Sin(step * stepOfCircleAroundStationToLaunchShips) * radiusOfShipsRingAroundStation; // по оси X
-        newPos.z = stationPosition.z + Mathf.Cos(step * stepOfCircleAroundStationToLaunchShips) * radiusOfShipsRingAroundStation; // по оси Z
+        newPos.x = stationPosition.x + Mathf.Sin(step * stepOfCircleAroundStationToPutShips) * radiusOfShipsRingAroundStation; // по оси X
+        newPos.z = stationPosition.z + Mathf.Cos(step * stepOfCircleAroundStationToPutShips) * radiusOfShipsRingAroundStation; // по оси Z
         newPos.y = 0; // по оси Y всегда 0
-        stepOfCircleAroundStationToLaunchShips++;
+        stepOfCircleAroundStationToPutShips++;
+        if (stepOfCircleAroundStationToPutShips > CommonProperties.shipPositionAroundStationLimit) stepOfCircleAroundStationToPutShips = 0;
         return newPos;
     }
 

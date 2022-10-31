@@ -48,10 +48,14 @@ public class StationCPU : StationClass
     [SerializeField]
     private CPUGun gunClass;
 
-    private StationClass stationToAttack;
+    //private StationClass stationToAttack;
 
     private const float nearHexMaxDistance = 65f;
     List<Vector3> wayDots;
+
+    private int stepOfCircleAroundStationToPutShips;
+
+    private bool produceCruiserNext;
 
     //public bool canSetConnection;
 
@@ -72,7 +76,7 @@ public class StationCPU : StationClass
         closeBattleShips = new List<BattleShipClass>();
         attackLaserLine = GetComponent<LineRenderer>();
         attackLaserLine.positionCount = 2;
-
+        stepOfCircleAroundStationToPutShips = 0;
         energyPullLine = stationTransform.GetChild(0).GetComponent<LineRenderer>();
 
         //TO FINISH WITH ALL TYPES OF STATIONS
@@ -110,6 +114,8 @@ public class StationCPU : StationClass
     }
     private void OnEnable()
     {
+        if (Random.Range(0, 2) > 0) produceCruiserNext = true;
+        else produceCruiserNext = false;
         stationToConnect = null;
         wayDots = new List<Vector3>();
         if (stationCurrentLevel > 0) gunSphereParentTransform = gunSphereParent.transform;
@@ -443,7 +449,7 @@ public class StationCPU : StationClass
             {
                 if (ShipsLimit > ShipsAssigned)
                 {
-                    if (Random.Range(0, 2) > 0)
+                    if (produceCruiserNext/*Random.Range(0, 2) > 0*/)
                     {
                         if (energyOfStation > CommonProperties.C4ProdEnergy)
                         {
@@ -452,15 +458,19 @@ public class StationCPU : StationClass
                             //Cruis4++;
                             ShipsAssigned++;
 
+                            //set if next pruduction must be cruiser, here the probability is less cause station have just produces cruiser
+                            produceCruiserNext = false;
+                            if (Random.Range(0, 3) > 1) produceCruiserNext = true;
                         }
-                        else if (energyOfStation > CommonProperties.D4ProdEnergy)
-                        {
-                            energyOfStation -= CommonProperties.D4ProdEnergy;
-                            launcheNewShip(false, 4);
-                            //Destr4++;
-                            ShipsAssigned++;
+                        else return;
+                        //else if (energyOfStation > CommonProperties.D4ProdEnergy)
+                        //{
+                        //    //energyOfStation -= CommonProperties.D4ProdEnergy;
+                        //    //launcheNewShip(false, 4);
+                        //    ////Destr4++;
+                        //    //ShipsAssigned++;
 
-                        }
+                        //}
                     }
 
                     else
@@ -472,6 +482,8 @@ public class StationCPU : StationClass
                             //Destr4++;
                             ShipsAssigned++;
 
+                            //set if next pruduction must be cruiser
+                            if (Random.Range(0, 2) > 0) produceCruiserNext = true;
                         }
                     }
                 }
@@ -486,7 +498,7 @@ public class StationCPU : StationClass
             {
                 if (ShipsLimit > ShipsAssigned)
                 {
-                    if (Random.Range(0, 2) > 0)
+                    if (produceCruiserNext /*Random.Range(0, 2) > 0*/)
                     {
                         if (energyOfStation > CommonProperties.C3ProdEnergy)
                         {
@@ -494,14 +506,19 @@ public class StationCPU : StationClass
                             launcheNewShip(true, 3);
                             //Cruis3++;
                             ShipsAssigned++;
+
+                            //set if next pruduction must be cruiser, here the probability is less cause station have just produces cruiser
+                            produceCruiserNext = false;
+                            if (Random.Range(0, 3) > 1) produceCruiserNext = true;
                         }
-                        else if (energyOfStation > CommonProperties.D3ProdEnergy)
-                        {
-                            energyOfStation -= CommonProperties.D3ProdEnergy;
-                            launcheNewShip(false, 3);
-                            //Destr3++;
-                            ShipsAssigned++;
-                        }
+                        else return;
+                        //else if (energyOfStation > CommonProperties.D3ProdEnergy)
+                        //{
+                        //    energyOfStation -= CommonProperties.D3ProdEnergy;
+                        //    launcheNewShip(false, 3);
+                        //    //Destr3++;
+                        //    ShipsAssigned++;
+                        //}
                     }
                     else
                     {
@@ -511,6 +528,9 @@ public class StationCPU : StationClass
                             launcheNewShip(false, 3);
                             //Destr3++;
                             ShipsAssigned++;
+
+                            //set if next pruduction must be cruiser
+                            if (Random.Range(0, 2) > 0) produceCruiserNext = true;
                         }
                     }
                 }
@@ -525,7 +545,7 @@ public class StationCPU : StationClass
             {
                 if (ShipsLimit > ShipsAssigned)
                 {
-                    if (Random.Range(0, 2) > 0)
+                    if (produceCruiserNext /*Random.Range(0, 2) > 0*/)
                     {
                         if (energyOfStation > CommonProperties.C2ProdEnergy)
                         {
@@ -533,24 +553,29 @@ public class StationCPU : StationClass
                             launcheNewShip(true, 2);
                             //Cruis2++;
                             ShipsAssigned++;
+
+                            //set if next pruduction must be cruiser, here the probability is less cause station have just produces cruiser
+                            produceCruiserNext = false;
+                            if (Random.Range(0, 3) > 1) produceCruiserNext = true;
                         }
-                        else
-                        {
-                            if (UnityEngine.Random.Range(0, 2) > 0)
-                            {
-                                energyOfStation -= CommonProperties.D2ProdEnergy;
-                                launcheNewShip(false, 2);
-                                //Destr2++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                energyOfStation -= CommonProperties.D2PProdEnergy;
-                                launcheNewShip(false, 22);
-                                //Destr2Par++;
-                                ShipsAssigned++;
-                            }
-                        }
+                        else return;
+                        //else
+                        //{
+                        //    if (UnityEngine.Random.Range(0, 2) > 0)
+                        //    {
+                        //        energyOfStation -= CommonProperties.D2ProdEnergy;
+                        //        launcheNewShip(false, 2);
+                        //        //Destr2++;
+                        //        ShipsAssigned++;
+                        //    }
+                        //    else
+                        //    {
+                        //        energyOfStation -= CommonProperties.D2PProdEnergy;
+                        //        launcheNewShip(false, 22);
+                        //        //Destr2Par++;
+                        //        ShipsAssigned++;
+                        //    }
+                        //}
                     }
                     else if (energyOfStation > CommonProperties.D2ProdEnergy)
                     {
@@ -560,6 +585,9 @@ public class StationCPU : StationClass
                             launcheNewShip(false, 2);
                             //Destr2++;
                             ShipsAssigned++;
+
+                            //set if next pruduction must be cruiser
+                            if (Random.Range(0, 2) > 0) produceCruiserNext = true;
                         }
                         else
                         {
@@ -567,6 +595,9 @@ public class StationCPU : StationClass
                             launcheNewShip(false, 22);
                             //Destr2Par++;
                             ShipsAssigned++;
+
+                            //set if next pruduction must be cruiser
+                            if (Random.Range(0, 2) > 0) produceCruiserNext = true;
                         }
 
                     }
@@ -583,7 +614,7 @@ public class StationCPU : StationClass
             {
                 if (ShipsLimit > ShipsAssigned)
                 {
-                    if (UnityEngine.Random.Range(0, 2) > 0)
+                    if (produceCruiserNext /*UnityEngine.Random.Range(0, 2) > 0*/)
                     {
                         if (energyOfStation > CommonProperties.C1ProdEnergy)
                         {
@@ -591,24 +622,29 @@ public class StationCPU : StationClass
                             launcheNewShip(true, 1);
                             //Cruis1++;
                             ShipsAssigned++;
+
+                            //set if next pruduction must be cruiser, here the probability is less cause station have just produces cruiser
+                            produceCruiserNext = false;
+                            if (Random.Range(0, 3) > 1) produceCruiserNext = true;
                         }
-                        else
-                        {
-                            if (UnityEngine.Random.Range(0, 2) > 0)
-                            {
-                                energyOfStation -= CommonProperties.D1ProdEnergy;
-                                launcheNewShip(false, 1);
-                                //Destr1++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                energyOfStation -= CommonProperties.D1PProdEnergy;
-                                launcheNewShip(false, 11);
-                                //Destr1Par++;
-                                ShipsAssigned++;
-                            }
-                        }
+                        else return;
+                        //else
+                        //{
+                        //    if (UnityEngine.Random.Range(0, 2) > 0)
+                        //    {
+                        //        energyOfStation -= CommonProperties.D1ProdEnergy;
+                        //        launcheNewShip(false, 1);
+                        //        //Destr1++;
+                        //        ShipsAssigned++;
+                        //    }
+                        //    else
+                        //    {
+                        //        energyOfStation -= CommonProperties.D1PProdEnergy;
+                        //        launcheNewShip(false, 11);
+                        //        //Destr1Par++;
+                        //        ShipsAssigned++;
+                        //    }
+                        //}
                     }
 
                     else if (energyOfStation > CommonProperties.D1ProdEnergy)
@@ -619,6 +655,9 @@ public class StationCPU : StationClass
                             launcheNewShip(false, 1);
                             //Destr1++;
                             ShipsAssigned++;
+
+                            //set if next pruduction must be cruiser
+                            if (Random.Range(0, 2) > 0) produceCruiserNext = true;
                         }
                         else
                         {
@@ -626,6 +665,9 @@ public class StationCPU : StationClass
                             launcheNewShip(false, 11);
                             //Destr1Par++;
                             ShipsAssigned++;
+
+                            //set if next pruduction must be cruiser
+                            if (Random.Range(0, 2) > 0) produceCruiserNext = true;
                         }
                     }
                 }
@@ -639,6 +681,241 @@ public class StationCPU : StationClass
         }
     }
 
+    private void produceTheShipsInGroup(bool ifSendFleetToPoint)
+    {
+        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > 0)
+        {
+            if (stationCurrentLevel == 0)
+            {
+                if (produceCruiserNext/*Random.Range(0, 2) > 0*/)
+                {
+                    if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C4ProdEnergy)
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C4ProdEnergy;
+                        launcheNewShip(true, 4);
+                        //Cruis4++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser, here the probability is less cause station have just produces cruiser
+                        produceCruiserNext = false;
+                        if (Random.Range(0, 3) > 1) produceCruiserNext = true;
+
+                    }
+                    else return;
+                    //else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy)
+                    //{
+                    //    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D4ProdEnergy;
+                    //    launcheNewShip(false, 4);
+                    //    //Destr4++;
+                    //    ShipsAssigned++;
+
+                    //}
+                }
+
+                else
+                {
+                    if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy)
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D4ProdEnergy;
+                        launcheNewShip(false, 4);
+                        //Destr4++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser
+                        if (Random.Range(0, 2) > 0) produceCruiserNext = true;
+
+                    }
+                }
+
+                if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
+                else
+                {
+                    allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
+                    if (ifSendFleetToPoint) giveAnOrderToFleet(); 
+                }
+            }
+            else if (stationCurrentLevel == 1)
+            {
+                if (produceCruiserNext /*Random.Range(0, 2) > 0*/)
+                {
+                    if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C3ProdEnergy)
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C3ProdEnergy;
+                        launcheNewShip(true, 3);
+                        //Cruis3++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser, here the probability is less cause station have just produces cruiser
+                        produceCruiserNext = false;
+                        if (Random.Range(0, 3) > 1) produceCruiserNext = true;
+
+                    }
+                    else return;
+                    //else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy)
+                    //{
+                    //    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D3ProdEnergy;
+                    //    launcheNewShip(false, 3);
+                    //    //Destr3++;
+                    //    ShipsAssigned++;
+                    //}
+                }
+                else
+                {
+                    if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy)
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D3ProdEnergy;
+                        launcheNewShip(false, 3);
+                        //Destr3++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser
+                        if (Random.Range(0, 2) > 0) produceCruiserNext = true;
+                    }
+                }
+
+                if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
+                else
+                {
+                    allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
+                    if (ifSendFleetToPoint) giveAnOrderToFleet();
+                }
+            }
+            else if (stationCurrentLevel == 2)
+            {
+                if (produceCruiserNext /*Random.Range(0, 2) > 0*/)
+                {
+                    if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C2ProdEnergy)
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C2ProdEnergy;
+                        launcheNewShip(true, 2);
+                        //Cruis2++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser, here the probability is less cause station have just produces cruiser
+                        produceCruiserNext = false;
+                        if (Random.Range(0, 3) > 1) produceCruiserNext = true;
+                    }
+                    else return;
+                    //else
+                    //{
+                    //    if (UnityEngine.Random.Range(0, 2) > 0)
+                    //    {
+                    //        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2ProdEnergy;
+                    //        launcheNewShip(false, 2);
+                    //        //Destr2++;
+                    //        ShipsAssigned++;
+                    //    }
+                    //    else
+                    //    {
+                    //        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2PProdEnergy;
+                    //        launcheNewShip(false, 22);
+                    //        //Destr2Par++;
+                    //        ShipsAssigned++;
+                    //    }
+                    //}
+                }
+                else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D2ProdEnergy)
+                {
+                    if (UnityEngine.Random.Range(0, 2) > 0)
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2ProdEnergy;
+                        launcheNewShip(false, 2);
+                        //Destr2++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser
+                        if (Random.Range(0, 2) > 0) produceCruiserNext = true;
+                    }
+                    else
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2PProdEnergy;
+                        launcheNewShip(false, 22);
+                        //Destr2Par++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser
+                        if (Random.Range(0, 2) > 0) produceCruiserNext = true;
+                    }
+
+                }
+
+                if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D2ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
+                else
+                {
+                    allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
+                    if (ifSendFleetToPoint) giveAnOrderToFleet();
+                }
+            }
+
+            else if (stationCurrentLevel == 3)
+            {
+                if (produceCruiserNext /*UnityEngine.Random.Range(0, 2) > 0*/)
+                {
+                    if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C1ProdEnergy)
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C1ProdEnergy;
+                        launcheNewShip(true, 1);
+                        //Cruis1++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser, here the probability is less cause station have just produces cruiser
+                        produceCruiserNext = false;
+                        if (Random.Range(0, 3) > 1) produceCruiserNext = true;
+                    }
+                    else return;
+                    //else
+                    //{
+                    //    if (UnityEngine.Random.Range(0, 2) > 0)
+                    //    {
+                    //        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1ProdEnergy;
+                    //        launcheNewShip(false, 1);
+                    //        //Destr1++;
+                    //        ShipsAssigned++;
+                    //    }
+                    //    else
+                    //    {
+                    //        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1PProdEnergy;
+                    //        launcheNewShip(false, 11);
+                    //        //Destr1Par++;
+                    //        ShipsAssigned++;
+                    //    }
+                    //}
+                }
+
+                else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D1ProdEnergy)
+                {
+                    if (UnityEngine.Random.Range(0, 2) > 0)
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1ProdEnergy;
+                        launcheNewShip(false, 1);
+                        //Destr1++;
+
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser
+                        if (Random.Range(0, 2) > 0) produceCruiserNext = true;
+                    }
+                    else
+                    {
+                        CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1PProdEnergy;
+                        launcheNewShip(false, 11);
+                        //Destr1Par++;
+                        ShipsAssigned++;
+
+                        //set if next pruduction must be cruiser
+                        if (Random.Range(0, 2) > 0) produceCruiserNext = true;
+                    }
+                }
+
+                if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D1ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
+                else
+                {
+                    allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
+                    if (ifSendFleetToPoint) giveAnOrderToFleet();
+                }
+            }
+        }
+    }
     //this function is called from energy ball energy pass, from ConnectionCPU class, from the CPUBattleShip class while it is destroyed, and from connection line class when energy transporter passes the energy
     // 1 - produce ship to defence minimum, 2 - produce ships to all energy to attack, 3 - upgrade station, 4 - upgrade gun
     public override void utilaizeTheEnergyOfCPUGroup(int useOfEnergy)
@@ -658,392 +935,14 @@ public class StationCPU : StationClass
         {
             if (ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT)
             {
-                if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > 0)
-                {
-                    if (stationCurrentLevel == 0)
-                    {
-                        if (Random.Range(0, 2) > 0)
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C4ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C4ProdEnergy;
-                                launcheNewShip(true, 4);
-                                //Cruis4++;
-                                ShipsAssigned++;
-
-                            }
-                            else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D4ProdEnergy;
-                                launcheNewShip(false, 4);
-                                //Destr4++;
-                                ShipsAssigned++;
-
-                            }
-                        }
-
-                        else
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D4ProdEnergy;
-                                launcheNewShip(false, 4);
-                                //Destr4++;
-                                ShipsAssigned++;
-
-                            }
-                        }
-
-                        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
-                        else
-                        {
-                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
-                        }
-                    }
-                    else if (stationCurrentLevel == 1)
-                    {
-                        if (Random.Range(0, 2) > 0)
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C3ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C3ProdEnergy;
-                                launcheNewShip(true, 3);
-                                //Cruis3++;
-                                ShipsAssigned++;
-                            }
-                            else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D3ProdEnergy;
-                                launcheNewShip(false, 3);
-                                //Destr3++;
-                                ShipsAssigned++;
-                            }
-                        }
-                        else
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D3ProdEnergy;
-                                launcheNewShip(false, 3);
-                                //Destr3++;
-                                ShipsAssigned++;
-                            }
-                        }
-
-                        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
-                        else
-                        {
-                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
-                        }
-                    }
-                    else if (stationCurrentLevel == 2)
-                    {
-                        if (Random.Range(0, 2) > 0)
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C2ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C2ProdEnergy;
-                                launcheNewShip(true, 2);
-                                //Cruis2++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                if (UnityEngine.Random.Range(0, 2) > 0)
-                                {
-                                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2ProdEnergy;
-                                    launcheNewShip(false, 2);
-                                    //Destr2++;
-                                    ShipsAssigned++;
-                                }
-                                else
-                                {
-                                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2PProdEnergy;
-                                    launcheNewShip(false, 22);
-                                    //Destr2Par++;
-                                    ShipsAssigned++;
-                                }
-                            }
-                        }
-                        else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D2ProdEnergy)
-                        {
-                            if (UnityEngine.Random.Range(0, 2) > 0)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2ProdEnergy;
-                                launcheNewShip(false, 2);
-                                //Destr2++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2PProdEnergy;
-                                launcheNewShip(false, 22);
-                                //Destr2Par++;
-                                ShipsAssigned++;
-                            }
-
-                        }
-
-                        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D2ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
-                        else
-                        {
-                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
-                        }
-                    }
-
-                    else if (stationCurrentLevel == 3)
-                    {
-                        if (UnityEngine.Random.Range(0, 2) > 0)
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C1ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C1ProdEnergy;
-                                launcheNewShip(true, 1);
-                                //Cruis1++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                if (UnityEngine.Random.Range(0, 2) > 0)
-                                {
-                                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1ProdEnergy;
-                                    launcheNewShip(false, 1);
-                                    //Destr1++;
-                                    ShipsAssigned++;
-                                }
-                                else
-                                {
-                                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1PProdEnergy;
-                                    launcheNewShip(false, 11);
-                                    //Destr1Par++;
-                                    ShipsAssigned++;
-                                }
-                            }
-                        }
-
-                        else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D1ProdEnergy)
-                        {
-                            if (UnityEngine.Random.Range(0, 2) > 0)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1ProdEnergy;
-                                launcheNewShip(false, 1);
-                                //Destr1++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1PProdEnergy;
-                                launcheNewShip(false, 11);
-                                //Destr1Par++;
-                                ShipsAssigned++;
-                            }
-                        }
-
-                        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D1ProdEnergy && ShipsAssigned < BASE_STATION_DEFENCE_SHIPS_COUNT) utilaizeTheEnergyOfCPUGroup(1);
-                        else
-                        {
-                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
-                        }
-                    }
-                }
+                produceTheShipsInGroup(false);
             }
         }
         if (useOfEnergy == 2)
         {
             if (ShipsAssigned < ShipsLimit)
             {
-                if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > 0)
-                {
-                    if (stationCurrentLevel == 0)
-                    {
-                        if (Random.Range(0, 2) > 0)
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C4ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C4ProdEnergy;
-                                launcheNewShip(true, 4);
-                                //Cruis4++;
-                                ShipsAssigned++;
-
-                            }
-                            else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D4ProdEnergy;
-                                launcheNewShip(false, 4);
-                                //Destr4++;
-                                ShipsAssigned++;
-
-                            }
-                        }
-
-                        else
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D4ProdEnergy;
-                                launcheNewShip(false, 4);
-                                //Destr4++;
-                                ShipsAssigned++;
-
-                            }
-                        }
-
-                        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D4ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergyOfCPUGroup(2);
-                        else
-                        {
-                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
-                            giveAnOrderToFleet();
-                        }
-                    }
-                    else if (stationCurrentLevel == 1)
-                    {
-                        if (Random.Range(0, 2) > 0)
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C3ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C3ProdEnergy;
-                                launcheNewShip(true, 3);
-                                //Cruis3++;
-                                ShipsAssigned++;
-                            }
-                            else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D3ProdEnergy;
-                                launcheNewShip(false, 3);
-                                //Destr3++;
-                                ShipsAssigned++;
-                            }
-                        }
-                        else
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D3ProdEnergy;
-                                launcheNewShip(false, 3);
-                                //Destr3++;
-                                ShipsAssigned++;
-                            }
-                        }
-
-                        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D3ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergyOfCPUGroup(2);
-                        else
-                        {
-                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
-                            giveAnOrderToFleet();
-                        }
-                    }
-                    else if (stationCurrentLevel == 2)
-                    {
-                        if (Random.Range(0, 2) > 0)
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C2ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C2ProdEnergy;
-                                launcheNewShip(true, 2);
-                                //Cruis2++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                if (UnityEngine.Random.Range(0, 2) > 0)
-                                {
-                                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2ProdEnergy;
-                                    launcheNewShip(false, 2);
-                                    //Destr2++;
-                                    ShipsAssigned++;
-                                }
-                                else
-                                {
-                                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2PProdEnergy;
-                                    launcheNewShip(false, 22);
-                                    //Destr2Par++;
-                                    ShipsAssigned++;
-                                }
-                            }
-                        }
-                        else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D2ProdEnergy)
-                        {
-                            if (UnityEngine.Random.Range(0, 2) > 0)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2ProdEnergy;
-                                launcheNewShip(false, 2);
-                                //Destr2++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D2PProdEnergy;
-                                launcheNewShip(false, 22);
-                                //Destr2Par++;
-                                ShipsAssigned++;
-                            }
-
-                        }
-
-                        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D2ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergyOfCPUGroup(2);
-                        else
-                        {
-                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
-                            giveAnOrderToFleet();
-                        }
-                    }
-
-                    else if (stationCurrentLevel == 3)
-                    {
-                        if (UnityEngine.Random.Range(0, 2) > 0)
-                        {
-                            if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.C1ProdEnergy)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.C1ProdEnergy;
-                                launcheNewShip(true, 1);
-                                //Cruis1++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                if (UnityEngine.Random.Range(0, 2) > 0)
-                                {
-                                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1ProdEnergy;
-                                    launcheNewShip(false, 1);
-                                    //Destr1++;
-                                    ShipsAssigned++;
-                                }
-                                else
-                                {
-                                    CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1PProdEnergy;
-                                    launcheNewShip(false, 11);
-                                    //Destr1Par++;
-                                    ShipsAssigned++;
-                                }
-                            }
-                        }
-
-                        else if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D1ProdEnergy)
-                        {
-                            if (UnityEngine.Random.Range(0, 2) > 0)
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1ProdEnergy;
-                                launcheNewShip(false, 1);
-                                //Destr1++;
-                                ShipsAssigned++;
-                            }
-                            else
-                            {
-                                CommonProperties.energyOfStationGroups[groupWhereTheStationIs] -= CommonProperties.D1PProdEnergy;
-                                launcheNewShip(false, 11);
-                                //Destr1Par++;
-                                ShipsAssigned++;
-                            }
-                        }
-
-                        if (CommonProperties.energyOfStationGroups[groupWhereTheStationIs] > CommonProperties.D1ProdEnergy && ShipsLimit > ShipsAssigned) utilaizeTheEnergyOfCPUGroup(2);
-                        else
-                        {
-                            allignTheShipsAroundStation(producedShips); //put ships around station after the last energy unit is utilized
-                            giveAnOrderToFleet();
-                        }
-                    }
-                }
+                produceTheShipsInGroup(true);
             }
         }
         
@@ -1661,11 +1560,12 @@ public class StationCPU : StationClass
             for (int i = 0; i < producedShipsToPass.Count; i++)
             {
                 Vector3 newPos;
-                float step = (Mathf.PI * 2) / producedShipsToPass.Count; // отступ
-                newPos.x = stationPosition.x + Mathf.Sin(step * i) * radiusOfShipsRingAroundStation; // по оси X
-                newPos.z = stationPosition.z + Mathf.Cos(step * i) * radiusOfShipsRingAroundStation; // по оси Z
+                float step = (Mathf.PI * 2) / ShipsLimit; //отступ //producedShipsToPass.Count;
+                newPos.x = stationPosition.x + Mathf.Sin(step * stepOfCircleAroundStationToPutShips) * radiusOfShipsRingAroundStation; // по оси X
+                newPos.z = stationPosition.z + Mathf.Cos(step * stepOfCircleAroundStationToPutShips) * radiusOfShipsRingAroundStation; // по оси Z
                 newPos.y = 0; // по оси Y всегда 0
                 squardPositions.Add(newPos);
+                stepOfCircleAroundStationToPutShips++; //switch the position of ship to next point around station
             }
             for (int i = 0; i < producedShipsToPass.Count; i++)
             {
@@ -1674,8 +1574,21 @@ public class StationCPU : StationClass
         }
         else if (producedShipsToPass.Count == 1)
         {
-            producedShipsToPass[0].giveAShipMoveOrder(new Vector3(stationPosition.x + 6, 0, stationPosition.z + 6), null);
+            Vector3 newPos;
+            float step = (Mathf.PI * 2) / ShipsLimit; // отступ
+            newPos.x = stationPosition.x + Mathf.Sin(step * stepOfCircleAroundStationToPutShips) * radiusOfShipsRingAroundStation; // по оси X
+            newPos.z = stationPosition.z + Mathf.Cos(step * stepOfCircleAroundStationToPutShips) * radiusOfShipsRingAroundStation; // по оси Z
+            newPos.y = 0; // по оси Y всегда 0
+            //squardPositions.Add(newPos);
+
+            producedShipsToPass[0].giveAShipMoveOrder(newPos, null);
+
+            stepOfCircleAroundStationToPutShips++; //switch the position of ship to next point around station
         }
+
+
+        //setting the counter of steps around station to 0 and begginning positioning the ships around station from the start point again
+        if (stepOfCircleAroundStationToPutShips > CommonProperties.shipPositionAroundStationLimit) stepOfCircleAroundStationToPutShips = 0;
 
         //if there is station under attack, the fleet is send to defence of station under attack
         StationClass stationUnderDefence = CPUfleetManager.getTheStationUnderDefence(CPUNumber);

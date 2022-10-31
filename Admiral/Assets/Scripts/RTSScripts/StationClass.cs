@@ -566,40 +566,40 @@ public class StationClass : MonoBehaviour
         }
     }
 
-    private int collectTheCloseEnemyShipsOneTime()
-    {
-        int count = 0;
-        for (int i = 0; i < CommonProperties.playerBattleShips.Count; i++)
-        {
-            if ((CommonProperties.playerBattleShips[i].shipTransform.position - stationPosition).magnitude <= attackDistance)
-            {
-                count++;
-            }
-        }
-        for (int i = 0; i < CommonProperties.CPUBattleShipsDictionary.Count; i++)
-        {
-            if (i != (CPUNumber - 1))
-            {
-                for (int y = 0; y < CommonProperties.CPUBattleShipsDictionary[i].Count; y++)
-                {
-                    if ((CommonProperties.CPUBattleShipsDictionary[i][y].shipTransform.position - stationPosition).magnitude <= attackDistance)
-                    {
-                        count++;
-                    }
-                }
-            }
-        }
-        return count;
-    }
+    //private int collectTheCloseEnemyShipsOneTime()
+    //{
+    //    int count = 0;
+    //    for (int i = 0; i < CommonProperties.playerBattleShips.Count; i++)
+    //    {
+    //        if ((CommonProperties.playerBattleShips[i].shipTransform.position - stationPosition).magnitude <= attackDistance)
+    //        {
+    //            count++;
+    //        }
+    //    }
+    //    for (int i = 0; i < CommonProperties.CPUBattleShipsDictionary.Count; i++)
+    //    {
+    //        if (i != (CPUNumber - 1))
+    //        {
+    //            for (int y = 0; y < CommonProperties.CPUBattleShipsDictionary[i].Count; y++)
+    //            {
+    //                if ((CommonProperties.CPUBattleShipsDictionary[i][y].shipTransform.position - stationPosition).magnitude <= attackDistance)
+    //                {
+    //                    count++;
+    //                }
+    //            }
+    //        }
+    //    }
+    //    return count;
+    //}
 
     public void increaseTheHPOfStation(float energyAmount)
     {
-        if (CPUNumber != 0 && collectTheCloseEnemyShipsOneTime() < 4 && CPUfleetManager.checkIfStationUnderDefence(CPUNumber,this)) CPUfleetManager.cancelCallForHelp(CPUNumber);
         lifeLineAmount += (energyAmount / 500)* (2-fillingSpeed);
+        if (CPUNumber != 0 && lifeLineAmount==0 && CPUfleetManager.checkIfStationUnderDefence(CPUNumber, this)) CPUfleetManager.cancelCallForHelp(CPUNumber);
         if (lifeLineAmount > 0)
         {
             lifeLineAmount = 0;
-            if (CPUNumber != 0 && collectTheCloseEnemyShipsOneTime() < 4 && CPUfleetManager.checkIfStationUnderDefence(CPUNumber, this)) CPUfleetManager.cancelCallForHelp(CPUNumber);
+            if (CPUNumber != 0 && CPUfleetManager.checkIfStationUnderDefence(CPUNumber, this)) CPUfleetManager.cancelCallForHelp(CPUNumber);
         }
         fillingLine.localPosition = new Vector3(lifeLineAmount, 0, 0);
     }

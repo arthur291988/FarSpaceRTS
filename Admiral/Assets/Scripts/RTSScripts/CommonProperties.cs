@@ -42,6 +42,9 @@ public class CommonProperties : MonoBehaviour
     public static Transform MainCameraOfRTSTransform;
     public static GameController gameController;
 
+
+    public static int shipPositionAroundStationLimit = 16;
+
     //0-Red, 1-green, 2-blue, 3-yellow, 4-purple
     public static byte colorOfPlayer = 1;
     public static byte megaAttackTime = 20;

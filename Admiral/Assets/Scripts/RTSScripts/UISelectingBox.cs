@@ -199,6 +199,16 @@ public class UISelectingBox : Singleton<UISelectingBox>
                                     newPos.y = 0; // по оси Y всегда 0
                                     squardPositions.Add(newPos);
                                 }
+                                else
+                                {
+                                    if (radiusGroup != 15) radiusGroup = 15;
+                                    Vector3 newPos;
+                                    float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
+                                    newPos.x = moveToPointFromTouch.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
+                                    newPos.z = moveToPointFromTouch.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
+                                    newPos.y = 0; // по оси Y всегда 0
+                                    squardPositions.Add(newPos);
+                                }
                             }
                             for (int i = 0; i < chosenPlayerBattleShipsObject.Count; i++)
                             {

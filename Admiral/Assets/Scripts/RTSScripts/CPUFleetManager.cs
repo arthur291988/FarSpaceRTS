@@ -163,7 +163,7 @@ public class CPUFleetManager : MonoBehaviour
     {
         if (CPUFleetStates[CPUNumber] == freeState)
         {
-            if (CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count > CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count * SHIPS_COUNT_MINIMUM_TO_ATTACK)
+            if (CommonProperties.CPUBattleShipsDictionary[CPUNumber - 1].Count >= CommonProperties.CPUStationsDictionary[CPUNumber - 1].Count * SHIPS_COUNT_MINIMUM_TO_ATTACK)
             {
                 squardPositions.Clear();
                 StationClass stationCPUAttackStartFrom = null;
@@ -350,6 +350,20 @@ public class CPUFleetManager : MonoBehaviour
                 else if (i <= (innnerCircleMax * 15))
                 {
                     if (radiusGroup != 12) radiusGroup = 12;
+                    Vector3 newPos;
+                    float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
+                    newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
+                    newPos.z = moveToPoint.z + Mathf.Cos(step * i) * radiusGroup; // по оси Z
+                    newPos.y = 0; // по оси Y всегда 0
+                    squardPositions.Add(newPos);
+                    if (i == (innnerCircleMax * 15))
+                    {
+                        if ((CPUBattleShipsPrepearedToAttack[CPUNumber].Count - squardPositions.Count) > innnerCircleMax *5) stepForOuterRadius = innnerCircleMax * 5;
+                        else stepForOuterRadius = CPUBattleShipsPrepearedToAttack[CPUNumber].Count - squardPositions.Count;
+                    }
+                }
+                else {
+                    if (radiusGroup != 15) radiusGroup = 15;
                     Vector3 newPos;
                     float step = (Mathf.PI * 2) / stepForOuterRadius; // отступ
                     newPos.x = moveToPoint.x + Mathf.Sin(step * i) * radiusGroup; // по оси X
