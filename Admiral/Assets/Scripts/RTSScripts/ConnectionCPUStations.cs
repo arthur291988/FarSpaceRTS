@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using static System.Collections.Specialized.BitVector32;
 
 public class ConnectionCPUStations : MonoBehaviour
 {
@@ -69,7 +70,8 @@ public class ConnectionCPUStations : MonoBehaviour
         {
             List<List<StationClass>> newGroup = new List<List<StationClass>>();
             List<StationClass> newConnection = new List<StationClass>();
-            if (CommonProperties.StationGroups.ContainsKey(stationConnectionStartFrom.CPUNumber)) CommonProperties.StationGroups[stationConnectionStartFrom.CPUNumber].Add(newConnection);
+            if (CommonProperties.StationGroups.ContainsKey(stationConnectionStartFrom.CPUNumber)) 
+                CommonProperties.StationGroups[stationConnectionStartFrom.CPUNumber].Add(newConnection);
             //so if there no station groups of this CPU it is first created
             else
             {
@@ -194,7 +196,8 @@ public class ConnectionCPUStations : MonoBehaviour
         for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
         {
             //defence minimum increases if the station level is higer
-            if (groupsWhereTheStationIs[i].ShipsAssigned < (BASE_STATION_DEFENCE_SHIPS_COUNT+groupsWhereTheStationIs[i].stationCurrentLevel)) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(1);
+            if (groupsWhereTheStationIs[i].ShipsAssigned < (BASE_STATION_DEFENCE_SHIPS_COUNT+groupsWhereTheStationIs[i].stationCurrentLevel)) 
+                groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(1);
         }
 
         int possibleConnections = 0;
@@ -217,6 +220,7 @@ public class ConnectionCPUStations : MonoBehaviour
             upgradeOrProduceShips(groupsWhereTheStationIs);
         }
 
+        #region old code
         ////second is to capture as more as possible stars
         //if (CommonProperties.stars.Count > 0)
         //{
@@ -311,34 +315,77 @@ public class ConnectionCPUStations : MonoBehaviour
         //}
 
         //Debug.Log("After " + CommonProperties.energyOfStationGroups[groupsWhereTheStationIs]);
+        #endregion 
     }
 
     private static void upgradeOrProduceShips(List<StationClass> groupsWhereTheStationIs)
     {
         int possibleStationUpgrades = 0;
+
+        StationClass stationToUpgrade = null;
         for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
         {
-            if (groupsWhereTheStationIs[i].energyToNextUpgradeOfStation <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationCurrentLevel < groupsWhereTheStationIs[i].upgradeCounts)
+            //upgrade the station only of ot has enough connections 
+            if (groupsWhereTheStationIs[i].stationCurrentLevel<groupsWhereTheStationIs[i].upgradeCounts && 
+                groupsWhereTheStationIs[i].stationCurrentLevel<groupsWhereTheStationIs[i].ConnectedStations.Count)
             {
-                groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(3);
+                if (stationToUpgrade == null) stationToUpgrade = groupsWhereTheStationIs[i];
+                else if (stationToUpgrade.stationCurrentLevel < groupsWhereTheStationIs[i].stationCurrentLevel) stationToUpgrade = groupsWhereTheStationIs[i];
             }
-            if (groupsWhereTheStationIs[i].stationCurrentLevel < groupsWhereTheStationIs[i].upgradeCounts) possibleStationUpgrades++;
+            //if (groupsWhereTheStationIs[i].stationCurrentLevel < groupsWhereTheStationIs[i].upgradeCounts &&
+            //    groupsWhereTheStationIs[i].stationCurrentLevel < groupsWhereTheStationIs[i].ConnectedStations.Count) possibleStationUpgrades++;
         }
+        if (stationToUpgrade != null && stationToUpgrade.energyToNextUpgradeOfStation <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
+        {
+            stationToUpgrade.utilaizeTheEnergyOfCPUGroup(3);
+            stationToUpgrade = null;
+        }
+        else possibleStationUpgrades++;
+
         if (possibleStationUpgrades == 0)
         {
             for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
             {
-                if (groupsWhereTheStationIs[i].energyToNextUpgradeOfGun <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationGunLevel < groupsWhereTheStationIs[i].GunUpgradeCounts)
+                if (groupsWhereTheStationIs[i].stationGunLevel < groupsWhereTheStationIs[i].GunUpgradeCounts)
                 {
-                    groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(4);
+                    if (stationToUpgrade == null) stationToUpgrade = groupsWhereTheStationIs[i];
+                    else if (stationToUpgrade.ConnectedStations.Count < groupsWhereTheStationIs[i].ConnectedStations.Count) stationToUpgrade = groupsWhereTheStationIs[i];
                 }
             }
-        }
-        for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
-        {
-            if (groupsWhereTheStationIs[i].ShipsAssigned < groupsWhereTheStationIs[i].ShipsLimit) groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(2);
+            if (stationToUpgrade != null && stationToUpgrade.ConnectedStations.Count > 1 &&
+                stationToUpgrade.energyToNextUpgradeOfGun <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs])
+            {
+                stationToUpgrade.utilaizeTheEnergyOfCPUGroup(4);
+                stationToUpgrade = null;
+            }
         }
 
+        //if (possibleStationUpgrades == 0)
+        //{
+        //    for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        //    {
+        //        if (groupsWhereTheStationIs[i].energyToNextUpgradeOfGun <= CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] && groupsWhereTheStationIs[i].stationGunLevel < groupsWhereTheStationIs[i].GunUpgradeCounts)
+        //        {
+        //            groupsWhereTheStationIs[i].utilaizeTheEnergyOfCPUGroup(4);
+        //        }
+        //    }
+        //}
+
+        for (int i = 0; i < groupsWhereTheStationIs.Count; i++)
+        {
+            if (stationToUpgrade == null) stationToUpgrade = groupsWhereTheStationIs[i];
+            else if (stationToUpgrade.stationCurrentLevel < groupsWhereTheStationIs[i].stationCurrentLevel &&
+                groupsWhereTheStationIs[i].ShipsAssigned< groupsWhereTheStationIs[i].ShipsLimit) {
+                stationToUpgrade = groupsWhereTheStationIs[i];
+            }
+            else if (stationToUpgrade.stationCurrentLevel >= groupsWhereTheStationIs[i].stationCurrentLevel &&
+                stationToUpgrade.ShipsAssigned == stationToUpgrade.ShipsLimit)
+            {
+                stationToUpgrade = groupsWhereTheStationIs[i];
+            }
+        }
+        if (stationToUpgrade!=null && stationToUpgrade.ShipsAssigned < stationToUpgrade.ShipsLimit) stationToUpgrade.utilaizeTheEnergyOfCPUGroup(2);
+        #region old code
         //if (Random.Range(0, 5) > 0)
         //{
         //    if (CommonProperties.energyOfStationGroups[groupsWhereTheStationIs] >= MINIMUM_ENENRGY_TO_START_STATION_UPGRADE_LOOP)
@@ -372,6 +419,7 @@ public class ConnectionCPUStations : MonoBehaviour
         //        }
         //    }
         //}
+        #endregion
     }
 
 }

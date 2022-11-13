@@ -188,7 +188,7 @@ public class GameController : MonoBehaviour
         station.Destr2Par = 0;
         station.Destr1 = 0;
         station.Destr1Par = 0;
-        station.energyOfStation = 5000; //150
+        station.energyOfStation = 150; 
         station.fillingSpeed = CommonProperties.star0FillingReducer; ;
         station.ShipsAssigned = 0;
         station.energyToConnection = CommonProperties.Station0EnergyToConnection;
@@ -246,7 +246,7 @@ public class GameController : MonoBehaviour
         stationCPU.Destr2Par = 0;
         stationCPU.Destr1 = 0;
         stationCPU.Destr1Par = 0;
-        stationCPU.energyOfStation = 150; //40
+        stationCPU.energyOfStation = 200; //40
         stationCPU.fillingSpeed = CommonProperties.star0FillingReducer; ;
         stationCPU.ShipsAssigned = 0;
         stationCPU.energyToConnection = CommonProperties.Station0EnergyToConnection;
@@ -261,7 +261,7 @@ public class GameController : MonoBehaviour
         //stationCPU.stationShotTimer = stationCPU.stationShotTime;
         stationCPU.energonCatchDistance = CommonProperties.Station0EnergonCatchDistance;
         stationCPU.energyLimitOfStation = CommonProperties.Station0EnergyLimit;
-        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
+        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmountCPU;
         stationCPU.speedOfBullet = CommonProperties.Station0BulletSpeed;
         stationCPU.colorToEnergy = CommonProperties.Station0ColorToEnergyMultiplyer;
         stationCPU.ShipsLimit = CommonProperties.Station0ShipsLimit;
@@ -303,7 +303,7 @@ public class GameController : MonoBehaviour
         stationCPU.Destr2Par = 0;
         stationCPU.Destr1 = 0;
         stationCPU.Destr1Par = 0;
-        stationCPU.energyOfStation = 150; //40
+        stationCPU.energyOfStation = 200; //40
         stationCPU.fillingSpeed = CommonProperties.star0FillingReducer; ;
         stationCPU.ShipsAssigned = 0;
         stationCPU.energyToConnection = CommonProperties.Station0EnergyToConnection;
@@ -312,7 +312,7 @@ public class GameController : MonoBehaviour
         //stationCPU.energyRequiredToShot = CommonProperties.Station0EnergytoShot;
         stationCPU.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
         stationCPU.energyInscreaseTimer = stationCPU.energyInscreaseTime;
-        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
+        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmountCPU;
         stationCPU.HPInscreaseTimer = stationCPU.energyInscreaseTime;
         //stationCPU.stationShotTime = CommonProperties.Station0ShotTime;
         //stationCPU.stationShotTimer = stationCPU.stationShotTime;
@@ -363,7 +363,7 @@ public class GameController : MonoBehaviour
         stationCPU.Destr2Par = 0;
         stationCPU.Destr1 = 0;
         stationCPU.Destr1Par = 0;
-        stationCPU.energyOfStation = 150; //40
+        stationCPU.energyOfStation = 200; //40
         stationCPU.fillingSpeed = CommonProperties.star0FillingReducer; ;
         stationCPU.ShipsAssigned = 0;
         stationCPU.energyToConnection = CommonProperties.Station0EnergyToConnection;
@@ -372,7 +372,7 @@ public class GameController : MonoBehaviour
         //stationCPU.energyRequiredToShot = CommonProperties.Station0EnergytoShot;
         stationCPU.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
         stationCPU.energyInscreaseTimer = stationCPU.energyInscreaseTime;
-        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
+        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmountCPU;
         stationCPU.HPInscreaseTimer = stationCPU.energyInscreaseTime;
         //stationCPU.stationShotTime = CommonProperties.Station0ShotTime;
         //stationCPU.stationShotTimer = stationCPU.stationShotTime;
@@ -423,7 +423,7 @@ public class GameController : MonoBehaviour
         stationCPU.Destr2Par = 0;
         stationCPU.Destr1 = 0;
         stationCPU.Destr1Par = 0;
-        stationCPU.energyOfStation = 150; //40
+        stationCPU.energyOfStation = 200; //40
         stationCPU.fillingSpeed = CommonProperties.star0FillingReducer; ;
         stationCPU.ShipsAssigned = 0;
         stationCPU.energyToConnection = CommonProperties.Station0EnergyToConnection;
@@ -432,7 +432,7 @@ public class GameController : MonoBehaviour
         //stationCPU.energyRequiredToShot = CommonProperties.Station0EnergytoShot;
         stationCPU.energyInscreaseTime = CommonProperties.Station0EnergyProduceTime;
         stationCPU.energyInscreaseTimer = stationCPU.energyInscreaseTime;
-        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmount;
+        stationCPU.energyProdeucePerTime = CommonProperties.Station0EnergyProduceAmountCPU;
         stationCPU.HPInscreaseTimer = stationCPU.energyInscreaseTime;
         //stationCPU.stationShotTime = CommonProperties.Station0ShotTime;
         //stationCPU.stationShotTimer = stationCPU.stationShotTime;

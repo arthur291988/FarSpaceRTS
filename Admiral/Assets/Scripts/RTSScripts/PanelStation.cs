@@ -138,9 +138,11 @@ public class PanelStation : MonoBehaviour
             else if (station.stationCurrentLevel == 1) upgradeButtonImg.sprite = Station2Sprite;
             else if (station.stationCurrentLevel == 2) upgradeButtonImg.sprite = Station1Sprite;
             energyForUpgrade.text = station.energyToNextUpgradeOfStation.ToString();
+
             if (station.groupWhereTheStationIs != null /*&& station.groupWhereTheStationIs.Count > 0*/)
             {
-                if (CommonProperties.energyOfStationGroups[station.groupWhereTheStationIs] >= station.energyToNextUpgradeOfStation)
+                if (CommonProperties.energyOfStationGroups[station.groupWhereTheStationIs] >= station.energyToNextUpgradeOfStation &&
+                    station.stationCurrentLevel < station.ConnectedStations.Count)
                 {
                     upgradeButton.interactable = true;
                 }
@@ -151,7 +153,7 @@ public class PanelStation : MonoBehaviour
             }
             else
             {
-                if (station.energyOfStation >= station.energyToNextUpgradeOfStation)
+                if (station.energyOfStation >= station.energyToNextUpgradeOfStation && station.stationCurrentLevel < station.ConnectedStations.Count)
                 {
                     upgradeButton.interactable = true;
                 }
@@ -246,7 +248,8 @@ public class PanelStation : MonoBehaviour
     {
         if (station.groupWhereTheStationIs != null /*&& station.groupWhereTheStationIs.Count > 0*/)
         {
-            if (CommonProperties.energyOfStationGroups[station.groupWhereTheStationIs] >= station.energyToNextUpgradeOfStation)
+            if (CommonProperties.energyOfStationGroups[station.groupWhereTheStationIs] >= station.energyToNextUpgradeOfStation &&
+                station.stationCurrentLevel < station.ConnectedStations.Count)
             {
                 if (!upgradeButton.interactable) upgradeButton.interactable = true;
             }
@@ -257,7 +260,7 @@ public class PanelStation : MonoBehaviour
         }
         else
         {
-            if (station.energyOfStation >= station.energyToNextUpgradeOfStation)
+            if (station.energyOfStation >= station.energyToNextUpgradeOfStation && station.stationCurrentLevel < station.ConnectedStations.Count)
             {
                 if (!upgradeButton.interactable) upgradeButton.interactable = true;
             }

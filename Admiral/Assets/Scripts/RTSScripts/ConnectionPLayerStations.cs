@@ -108,7 +108,7 @@ public class ConnectionPLayerStations : Singleton<ConnectionPLayerStations>
                 CommonProperties.StationGroups.Add(stationConnectionStartFrom.CPUNumber, newGroup);
                 newGroup.Add(newConnection);
             }
-            newGroup.Add(newConnection);
+            //newGroup.Add(newConnection);
             newConnection.Add(stationConnectionStartFrom);
             stationConnectionStartFrom.ConnectedStations.Add(stationToConnect);
             //stationConnectionStartFrom.connectionsCount++;

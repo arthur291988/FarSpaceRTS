@@ -216,6 +216,11 @@ public class CommonProperties : MonoBehaviour
     public static int Station2EnergyProduceAmount = 16;//16;
     public static int Station3EnergyProduceAmount = 25;//25;
 
+    public static int Station0EnergyProduceAmountCPU = 14;//7;
+    public static int Station1EnergyProduceAmountCPU = 22;//11;
+    public static int Station2EnergyProduceAmountCPU = 32;//16;
+    public static int Station3EnergyProduceAmountCPU = 50;//25;
+
     public static float Station0EnergyPullRate = 1f;
     public static float Station1EnergyPullRate = 2f;
     public static float Station2EnergyPullRate = 3f;

@@ -33,8 +33,8 @@ public class StationCPU : StationClass
     private float radiusGroup;
     private int innnerCircleMax;
 
-    public const int BASE_STATION_DEFENCE_SHIPS_COUNT = 2; //6;
-    private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 10;
+    public const int BASE_STATION_DEFENCE_SHIPS_COUNT = 1; //6;
+    private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 12;
 
     public List<GameObject> stationColorSphere; //parts of station demostrate the color of station
 
@@ -355,7 +355,7 @@ public class StationCPU : StationClass
             checkIfStationCanConnect();
 
             //all energy to produce the ships first
-            if ((stationCurrentLevel < upgradeCounts || stationGunLevel < GunUpgradeCounts || stationToConnect != null) && ShipsLimit == ShipsAssigned)
+            if ((stationCurrentLevel < upgradeCounts || stationGunLevel < GunUpgradeCounts || stationToConnect != null) && ShipsAssigned==SHIPS_COUNT_MINIMUM_TO_ATTACK)
             {
                 //20/80 math means 80% of energy goes to upgrade or set connections
                 //if (stationToConnect != null) energyLeft = (int)(energyOfStation * 0.2f); //so if there is some station to connect around it will hold more to set connection
@@ -373,29 +373,30 @@ public class StationCPU : StationClass
                 energyOfStationToSetConnection += energyOfStationToUPGrade;
                 energyOfStationToUPGrade = 0;
             }
-            else
-            {
-                if (stationCurrentLevel < upgradeCounts)
-                {
-                    if (stationGunLevel < GunUpgradeCounts)
-                    {
-                        energyOfStationToUPGradeStation += (int)(energyOfStationToUPGrade * 0.8f);
-                        energyOfStationToUPGradeGun += (int)(energyOfStationToUPGrade * 0.2f);
+            
+            //else
+            //{
+            //    if (stationCurrentLevel < upgradeCounts)
+            //    {
+            //        if (stationGunLevel < GunUpgradeCounts)
+            //        {
+            //            energyOfStationToUPGradeStation += (int)(energyOfStationToUPGrade * 0.8f);
+            //            energyOfStationToUPGradeGun += (int)(energyOfStationToUPGrade * 0.2f);
 
-                        energyOfStationToUPGrade = 0;
-                    }
-                    else
-                    {
-                        energyOfStationToUPGradeStation += energyOfStationToUPGrade;
-                        energyOfStationToUPGrade = 0;
-                    }
-                }
-                else if (stationGunLevel < GunUpgradeCounts)
-                {
-                    energyOfStationToUPGradeGun += energyOfStationToUPGrade;
-                    energyOfStationToUPGrade = 0;
-                }
-            }
+            //            energyOfStationToUPGrade = 0;
+            //        }
+            //        else
+            //        {
+            //            energyOfStationToUPGradeStation += energyOfStationToUPGrade;
+            //            energyOfStationToUPGrade = 0;
+            //        }
+            //    }
+            //    else if (stationGunLevel < GunUpgradeCounts)
+            //    {
+            //        energyOfStationToUPGradeGun += energyOfStationToUPGrade;
+            //        energyOfStationToUPGrade = 0;
+            //    }
+            //}
 
             if (energyOfStationToSetConnection >= energyToConnection && stationToConnect != null)
             {
@@ -403,34 +404,34 @@ public class StationCPU : StationClass
                 ConnectionCPUStations.setConnections(this, stationToConnect);
                 stationToConnect = null;
             }
-            //utilizing the energy to upgrade
-            if (energyOfStationToUPGradeStation >= energyToNextUpgradeOfStation && stationCurrentLevel < upgradeCounts)
-            {
-                energyOfStationToUPGradeStation -= energyToNextUpgradeOfStation;
-                //transfering the energy left after upgrade of station to gun upgrade energy balance, or further to energy of station
-                if (energyOfStationToUPGradeStation > 0 && (stationCurrentLevel + 1) == upgradeCounts)
-                {
-                    if (stationGunLevel < GunUpgradeCounts)
-                    {
-                        energyOfStationToUPGradeGun += energyOfStationToUPGradeStation;
-                        energyOfStationToUPGradeStation = 0;
-                    }
-                    else
-                    {
-                        energyOfStation += (int)energyOfStationToUPGradeStation;
-                        energyOfStationToUPGradeStation = 0;
-                    }
-                }
-                upgradeStation(stationCurrentLevel + 1);
-                return; //breaking this method
-            }
+            //utilizing the energy to upgrade (if it has enough connections)
+            //if (energyOfStationToUPGradeStation >= energyToNextUpgradeOfStation && stationCurrentLevel < upgradeCounts && stationCurrentLevel<ConnectedStations.Count)
+            //{
+            //    energyOfStationToUPGradeStation -= energyToNextUpgradeOfStation;
+            //    //transfering the energy left after upgrade of station to gun upgrade energy balance, or further to energy of station
+            //    if (energyOfStationToUPGradeStation > 0 && (stationCurrentLevel + 1) == upgradeCounts)
+            //    {
+            //        if (stationGunLevel < GunUpgradeCounts)
+            //        {
+            //            energyOfStationToUPGradeGun += energyOfStationToUPGradeStation;
+            //            energyOfStationToUPGradeStation = 0;
+            //        }
+            //        else
+            //        {
+            //            energyOfStation += energyOfStationToUPGradeStation;
+            //            energyOfStationToUPGradeStation = 0;
+            //        }
+            //    }
+            //    upgradeStation(stationCurrentLevel + 1);
+            //    return; //breaking this method
+            //}
             //gun upgrade goes second
             if (energyOfStationToUPGradeGun >= energyToNextUpgradeOfGun && stationGunLevel < GunUpgradeCounts)
             {
                 energyOfStationToUPGradeGun -= energyToNextUpgradeOfGun;
                 if (energyOfStationToUPGradeGun > 0)
                 {
-                    energyOfStation += (int)energyOfStationToUPGradeGun; //transfering the energy left ufter upgrade of gun to energy balance
+                    energyOfStation += energyOfStationToUPGradeGun; //transfering the energy left ufter upgrade of gun to energy balance
                     energyOfStationToUPGradeGun = 0;
                 }
                 upgradeTheGun(stationGunLevel + 1);
@@ -944,6 +945,7 @@ public class StationCPU : StationClass
             {
                 produceTheShipsInGroup(true);
             }
+            else giveAnOrderToFleet(); //start attack acctions toward star or toward enemy station if the limit of ship production reached
         }
         
     }
@@ -967,7 +969,7 @@ public class StationCPU : StationClass
             //station.energyLoseIfDestroyed = CommonProperties.Station1GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station1EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station1EnergyProduceTime;
-            station.energyProdeucePerTime = CommonProperties.Station1EnergyProduceAmount;
+            station.energyProdeucePerTime = CommonProperties.Station1EnergyProduceAmountCPU;
             //station.stationShotTime = CommonProperties.Station1ShotTime;
             station.energonCatchDistance = CommonProperties.Station1EnergonCatchDistance;
             station.energyLimitOfStation = CommonProperties.Station1EnergyLimit;
@@ -987,7 +989,7 @@ public class StationCPU : StationClass
             //station.energyLoseIfDestroyed = CommonProperties.Station2GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station2EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station2EnergyProduceTime;
-            station.energyProdeucePerTime = CommonProperties.Station2EnergyProduceAmount;
+            station.energyProdeucePerTime = CommonProperties.Station2EnergyProduceAmountCPU;
             //station.stationShotTime = CommonProperties.Station2ShotTime;
             station.energonCatchDistance = CommonProperties.Station2EnergonCatchDistance;
             station.energyLimitOfStation = CommonProperties.Station2EnergyLimit;
@@ -1007,7 +1009,7 @@ public class StationCPU : StationClass
             //station.energyLoseIfDestroyed = CommonProperties.Station3GroupEnergyLoseIfDestroyed;
             station.energyToGetFromLine = CommonProperties.Station3EnergyFromLine;
             station.energyInscreaseTime = CommonProperties.Station3EnergyProduceTime;
-            station.energyProdeucePerTime = CommonProperties.Station3EnergyProduceAmount;
+            station.energyProdeucePerTime = CommonProperties.Station3EnergyProduceAmountCPU;
             //station.stationShotTime = CommonProperties.Station3ShotTime;
             station.energonCatchDistance = CommonProperties.Station3EnergonCatchDistance;
             station.energyLimitOfStation = CommonProperties.Station3EnergyLimit;

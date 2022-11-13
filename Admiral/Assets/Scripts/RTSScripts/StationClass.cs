@@ -284,7 +284,7 @@ public class StationClass : MonoBehaviour
             for (int i = 0; i < CommonProperties.CPUStations.Count; i++) CommonProperties.CPUStations[i].giveAnOrderToFleet();
 
             //setting the state of fleet to free in case if station under defence
-            if (CPUfleetManager.checkIfStationUnderDefence(CPUNumber, this)) CPUfleetManager.setTheStateOfFleet(CPUNumber, 0);
+            if (CPUNumber!=0 && CPUfleetManager.checkIfStationUnderDefence(CPUNumber, this)) CPUfleetManager.setTheStateOfFleet(CPUNumber, 0);
 
             //regrouping the stations in the group of this station
             if (groupWhereTheStationIs != null /*&& groupWhereTheStationIs.Count > 0*/)
@@ -307,7 +307,7 @@ public class StationClass : MonoBehaviour
                 CommonProperties.energyOfStationGroups.Remove(groupWhereTheStationIs);
                 CommonProperties.energyLimitOfStationGroups.Remove(groupWhereTheStationIs);
 
-                //erasing this group reference from the ather stations in group
+                //erasing this group reference from the other stations in group
                 foreach (StationClass stationsInGroupOfDestroyingStation in groupWhereTheStationIs)
                     if (stationsInGroupOfDestroyingStation != this) stationsInGroupOfDestroyingStation.groupWhereTheStationIs = null;
 
@@ -368,7 +368,8 @@ public class StationClass : MonoBehaviour
         //check if there left only one connection or more
         if (CommonProperties.connectionLines[CPUNumber].Count == 1)
         {
-            if (CommonProperties.connectionLines[CPUNumber][0].stations[0].groupWhereTheStationIs == null && CommonProperties.connectionLines[CPUNumber][0].stations[1].groupWhereTheStationIs == null)
+            if (CommonProperties.connectionLines[CPUNumber][0].stations[0].groupWhereTheStationIs == null && 
+                CommonProperties.connectionLines[CPUNumber][0].stations[1].groupWhereTheStationIs == null)
             {
                 List<List<StationClass>> newGroup = new List<List<StationClass>>();
                 List<StationClass> newConnection = new List<StationClass>();
@@ -389,7 +390,8 @@ public class StationClass : MonoBehaviour
                 CommonProperties.energyLimitOfStationGroups.Add(newConnection, CommonProperties.getTheEnergyLimitOfStationsGroup(newConnection));
             }
             //!!! I THINK THAT THIS LINE IS USELESS CAUSE THERE CAN'T BE SINGLE LINE LEFT WITH DIFFERENT GROUP STATIONS
-            else if (CommonProperties.connectionLines[CPUNumber][0].stations[0].groupWhereTheStationIs != null && CommonProperties.connectionLines[CPUNumber][0].stations[1].groupWhereTheStationIs != null)
+            else if (CommonProperties.connectionLines[CPUNumber][0].stations[0].groupWhereTheStationIs != null && 
+                CommonProperties.connectionLines[CPUNumber][0].stations[1].groupWhereTheStationIs != null)
             {
                 //case if one station of line is in another group than second one. Adding one group to another and leaving only one of the groups
                 if (CommonProperties.connectionLines[CPUNumber][0].stations[0].groupWhereTheStationIs != CommonProperties.connectionLines[CPUNumber][0].stations[1].groupWhereTheStationIs)
@@ -415,7 +417,8 @@ public class StationClass : MonoBehaviour
                 {
                     if (CommonProperties.connectionLines[CPUNumber][i] != CommonProperties.connectionLines[CPUNumber][y])
                     {
-                        if (CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs == null && CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs == null)
+                        if (CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs == null && 
+                            CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs == null)
                         {
                             List<List<StationClass>> newGroup = new List<List<StationClass>>();
                             List<StationClass> newConnection = new List<StationClass>();
@@ -492,7 +495,8 @@ public class StationClass : MonoBehaviour
                                 }
                             }
                         }
-                        else if (CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs != null && CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs != null)
+                        else if (CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs != null && 
+                            CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs != null)
                         {
                             //case if one station of line is in another group than second one. Adding one group to another and leaving only one of the groups
                             if (CommonProperties.connectionLines[CPUNumber][i].stations[0].groupWhereTheStationIs != CommonProperties.connectionLines[CPUNumber][i].stations[1].groupWhereTheStationIs)
@@ -531,10 +535,10 @@ public class StationClass : MonoBehaviour
         //if there is no group the energy will go to station with higest upgrade 
         if (CommonProperties.StationGroups[CPUNumber].Count > 0)
         {
-            int enenrgy = energyOfDiedGroup / CommonProperties.StationGroups[CPUNumber].Count;
+            int energy = energyOfDiedGroup / CommonProperties.StationGroups[CPUNumber].Count;
             for (int i = 0; i < CommonProperties.StationGroups[CPUNumber].Count; i++)
             {
-                CommonProperties.energyOfStationGroups[CommonProperties.StationGroups[CPUNumber][i]] += enenrgy;
+                CommonProperties.energyOfStationGroups[CommonProperties.StationGroups[CPUNumber][i]] += energy;
             }
         }
         else {
@@ -646,7 +650,7 @@ public class StationClass : MonoBehaviour
     public void reduceTheHPOfStation(float fillAmount)
     {
         lifeLineAmount -= fillAmount * fillingSpeed;
-        if (CPUNumber != 0 && !CPUfleetManager.checkIfStationUnderDefence(CPUNumber,this)) 
+        if (CPUNumber != 0 && CPUfleetManager.getTheFleetState(CPUNumber)!=4) 
             CPUfleetManager.callForHelp(CPUNumber, stationPosition, this); //callForAHelp(); 
         if (lifeLineAmount <= -6)
         {
