@@ -34,7 +34,7 @@ public class StationCPU : StationClass
     private int innnerCircleMax;
 
     public const int BASE_STATION_DEFENCE_SHIPS_COUNT = 1; //6;
-    private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 12;
+    private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 4; //13
 
     public List<GameObject> stationColorSphere; //parts of station demostrate the color of station
 
@@ -50,7 +50,7 @@ public class StationCPU : StationClass
 
     //private StationClass stationToAttack;
 
-    private const float nearHexMaxDistance = 65f;
+    private const float nearHexMaxDistance = 35f;// 65f;
     List<Vector3> wayDots;
 
     private int stepOfCircleAroundStationToPutShips;
@@ -975,7 +975,7 @@ public class StationCPU : StationClass
             station.energyLimitOfStation = CommonProperties.Station1EnergyLimit;
             station.colorToEnergy = CommonProperties.Station1ColorToEnergyMultiplyer;
             station.ShipsLimit = CommonProperties.Station1ShipsLimit;
-            station.speedOfBullet = CommonProperties.Station1BulletSpeed;
+            //station.speedOfBullet = CommonProperties.Station1BulletSpeed;
         }
         else if (nextStationLevel == 2)
         {
@@ -995,7 +995,7 @@ public class StationCPU : StationClass
             station.energyLimitOfStation = CommonProperties.Station2EnergyLimit;
             station.colorToEnergy = CommonProperties.Station2ColorToEnergyMultiplyer;
             station.ShipsLimit = CommonProperties.Station2ShipsLimit;
-            station.speedOfBullet = CommonProperties.Station2BulletSpeed;
+            //station.speedOfBullet = CommonProperties.Station2BulletSpeed;
         }
         else
         {
@@ -1015,7 +1015,7 @@ public class StationCPU : StationClass
             station.energyLimitOfStation = CommonProperties.Station3EnergyLimit;
             station.colorToEnergy = CommonProperties.Station3ColorToEnergyMultiplyer;
             station.ShipsLimit = CommonProperties.Station3ShipsLimit;
-            station.speedOfBullet = CommonProperties.Station3BulletSpeed;
+            //station.speedOfBullet = CommonProperties.Station3BulletSpeed;
         }
 
         station.CPUNumber = CPUNumber;

@@ -167,7 +167,7 @@ public class StationClass : MonoBehaviour
 
     public StationClass stationToConnect;
 
-    public const float oneStepCloseStationsMaxDistance = 140f;
+    public const float oneStepCloseStationsMaxDistance = 70f; //140f
 
     [HideInInspector]
     public CPUFleetManager CPUfleetManager;

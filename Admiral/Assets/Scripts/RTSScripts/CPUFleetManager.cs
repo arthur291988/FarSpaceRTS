@@ -24,8 +24,8 @@ public class CPUFleetManager : MonoBehaviour
     private Dictionary<int, StationClass> StationToAttack;
     private Dictionary<int, List<CPUBattleShip>> CPUBattleShipsPrepearedToAttack;
 
-    private const float radiusOfShipsRingAroundStation = 6;
-    private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 13;
+    private const float radiusOfShipsRingAroundStation = 3;
+    private const int SHIPS_COUNT_MINIMUM_TO_ATTACK = 4; //13
     private const int FLEET_ATTACK_TIME = 120;
     private const int FLEET_ATTACK_PREPARE_TIME = 25;
 
@@ -38,7 +38,7 @@ public class CPUFleetManager : MonoBehaviour
     //private const byte starAttackState = 3;
     private const byte defenceState = 4; //this one beats any other
 
-    public const float oneStepCloseStationsMaxDistance = 140f;
+    public const float oneStepCloseStationsMaxDistance = 70f;// 140f;
 
     private List<Vector3> squardPositions;
 

@@ -6,11 +6,12 @@ public class ObjectPullerRTS : MonoBehaviour
 {
     public static ObjectPullerRTS current;
 
-    private int pulledPreBurst = 10;
-    private int pulledPlayerGun1Bullets = 13;
-    private int pulled4Objects = 4;
-    private int pulled3Objects = 3;
-    private int pulled15Objects = 15;
+    private const int pulledPreBurst = 10;
+    private const int pulledPlayerGun1Bullets = 13;
+    private const int pulled4Objects = 4;
+    private const int pulled3Objects = 3;
+    private const int pulled15Objects = 15;
+    private const int pulled50Objects = 50;
     //private int pulled50Objects = 50;
     private bool willGrow;
 
@@ -465,10 +466,6 @@ public class ObjectPullerRTS : MonoBehaviour
             GameObject obj19 = (GameObject)Instantiate(Destr1ParPlayer);
             obj19.SetActive(false);
             Destr1ParPlayerPull.Add(obj19);
-
-            GameObject obj20 = (GameObject)Instantiate(connectionLine);
-            obj20.SetActive(false);
-            connectionLinePull.Add(obj20);
         }
         for (int i = 0; i < pulled4Objects; i++)
         {
@@ -496,6 +493,12 @@ public class ObjectPullerRTS : MonoBehaviour
             //obj5.transform.SetParent(parentCanvasOfAiming, false);
             //obj5.SetActive(false);
             //aimingRectPull.Add(obj5);
+        }
+        for (int i = 0; i < pulled50Objects; i++)
+        {
+            GameObject obj = (GameObject)Instantiate(connectionLine);
+            obj.SetActive(false);
+            connectionLinePull.Add(obj);
         }
 
 

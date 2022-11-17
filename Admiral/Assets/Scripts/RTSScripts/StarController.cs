@@ -175,7 +175,7 @@ public class StarController : MonoBehaviour
         //station.shotTimerTransformIndex = -6f / station.stationShotTime;
         station.energonCatchDistance = CommonProperties.Station0EnergonCatchDistance;
         station.energyLimitOfStation = CommonProperties.Station0EnergyLimit;
-        station.speedOfBullet = CommonProperties.Station0BulletSpeed; 
+        //station.speedOfBullet = CommonProperties.Station0BulletSpeed; 
         station.colorToEnergy = CommonProperties.Station0ColorToEnergyMultiplyer; 
         station.ShipsLimit = CommonProperties.Station0ShipsLimit;
         station.fillingLine.localPosition = new Vector3(0, 0, 0); //make full life to new station

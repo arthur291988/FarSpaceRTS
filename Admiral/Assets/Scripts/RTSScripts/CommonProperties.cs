@@ -206,8 +206,8 @@ public class CommonProperties : MonoBehaviour
     public static int Station2EnergyToConnection = 2000;//200;
     public static int Station3EnergyToConnection = 2500;//250;
 
-    public static float Station0EnergyProduceTime = 1;//7;
-    public static float Station1EnergyProduceTime = 1;//6;
+    public static float Station0EnergyProduceTime = 1.5f;//7;
+    public static float Station1EnergyProduceTime = 1.5f;//6;
     public static float Station2EnergyProduceTime = 1;//5;
     public static float Station3EnergyProduceTime = 1;//4;
 
@@ -231,25 +231,25 @@ public class CommonProperties : MonoBehaviour
     public static float Station2EnergonCatchDistance = 25f;//40f;
     public static float Station3EnergonCatchDistance = 28f;//45f;
 
-    public static float Station0BulletSpeed = 10f;
-    public static float Station1BulletSpeed = 13f;
-    public static float Station2BulletSpeed = 16f;
-    public static float Station3BulletSpeed = 20f;
+    //public static float Station0BulletSpeed = 10f;
+    //public static float Station1BulletSpeed = 13f;
+    //public static float Station2BulletSpeed = 16f;
+    //public static float Station3BulletSpeed = 20f;
 
     public static float Station0ColorToEnergyMultiplyer = 5f; //15
     public static float Station1ColorToEnergyMultiplyer = 10f; //20
     public static float Station2ColorToEnergyMultiplyer = 15f; //25
     public static float Station3ColorToEnergyMultiplyer = 20f; //30
 
-    public static float Station0ShotTime = 20f;
-    public static float Station1ShotTime = 17f;
-    public static float Station2ShotTime = 15f;
-    public static float Station3ShotTime = 12f;
+    //public static float Station0ShotTime = 20f;
+    //public static float Station1ShotTime = 17f;
+    //public static float Station2ShotTime = 15f;
+    //public static float Station3ShotTime = 12f;
 
-    public static byte Station0ShipsLimit = 16;
-    public static byte Station1ShipsLimit = 18;
-    public static byte Station2ShipsLimit = 20;
-    public static byte Station3ShipsLimit = 23;
+    public static byte Station0ShipsLimit = 5;//16;
+    public static byte Station1ShipsLimit = 6;//18;
+    public static byte Station2ShipsLimit = 7;//20;
+    public static byte Station3ShipsLimit = 9;//23;
 
     public static List<LineRenderer> stationsConnectionLines;
 
